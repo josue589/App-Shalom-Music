@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Escala Louvor</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary: #3366cc;
+            --success: #28a745;
+            --bg: #f8f9fa;
+            --text: #333;
+            --card-bg: #ffffff;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        
+        /* Telas */
+        #tela-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
+        #tela-app { display: none; }
+        
+        /* Cartões e Inputs */
+        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        
+        /* Botões */
+        button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:active { opacity: 0.8; }
+        button.btn-success { background: var(--success); }
+        button.btn-logout { background: #dc3545; padding: 8px 15px; width: auto; font-size: 14px; }
+        
+        /* Navegação */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .nav-tab { flex: 1; padding: 10px; text-align: center; background: #ddd; border-radius: 8px; font-size: 14px; color: #555; white-space: nowrap; cursor: pointer; }
+        .nav-tab.active { background: var(--primary); color: white; font-weight: bold; }
+        
+        /* Listas e Textos */
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .item-escala { border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 15px; background: #f9f9f9; padding: 10px 10px 10px 15px; border-radius: 0 8px 8px 0; }
+        .status-confirmado { color: var(--success); font-weight: bold; font-size: 12px; display: inline-block; margin-top: 5px; }
+        .status-pendente { color: #f39c12; font-weight: bold; font-size: 12px; display: inline-block; margin-top: 5px; }
+        
+        /* Cifra preservando quebras de linha */
+        .cifra-box { background: #eee; padding: 10px; border-radius: 6px; font-family: monospace; white-space: pre-wrap; font-size: 14px; margin-top: 10px; }
+        
+        #loading { display: none; text-align: center; color: #666; font-style: italic; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- TELA DE LOGIN -->
+        <div id="tela-login">
+            <div class="card">
+                <h2 style="text-align: center; margin-top:0;">🎵 Ministério de Louvor</h2>
+                <p style="text-align: center; color: #666;">Acesse com seu código</p>
+                <input type="password" id="codigo" placeholder="Ex: 1234">
+                <button onclick="fazerLogin()">Entrar no App</button>
+                <p id="msg-login" style="color: red; text-align: center; font-size: 14px; display: none;"></p>
+            </div>
+        </div>
+
+        <!-- TELA PRINCIPAL DO APP -->
+        <div id="tela-app">
+            <div class="header-app">
+                <div>
+                    <h3 style="margin: 0;" id="user-nome">Olá, Nome</h3>
+                    <small id="user-funcao" style="color: #666;">Função</small>
+                </div>
+                <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+            </div>
+
+            <!-- Menus de Navegação -->
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="mudarAba('minhas')">Minhas Escalas</div>
+                <div class="nav-tab" onclick="mudarAba('geral')">Próxima Geral</div>
+                <div class="nav-tab" onclick="mudarAba('repertorio')">Repertório</div>
+            </div>
+
+            <div id="loading">Carregando dados do Google... aguarde.</div>
+
+            <!-- Conteúdo das Abas -->
+            <div id="conteudo-aba"></div>
+        </div>
+    </div>
+
+    <!-- Referência para pegar a URL do Google -->
+    <script src="config.js"></script>
+    
+    <script>
+        // --- 1. CONFIGURAÇÃO PWA ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // --- 2. VARIÁVEIS GLOBAIS ---
+        let usuarioAtual = null;
+
+        // --- 3. INICIALIZAÇÃO ---
+        window.onload = () => {
+            const userSalvo = localStorage.getItem('louvor_user');
+            if (userSalvo) {
+                usuarioAtual = JSON.parse(userSalvo);
+                mostrarApp();
+            }
+        };
+
+        // --- 4. FUNÇÕES COMUNICANDO COM O GOOGLE (API) ---
+        async function fetchAPI(parametros) {
+            mostrarLoading(true);
+            try {
+                // Monta a URL com os parâmetros (ex: ?acao=login&codigo=123)
+                const url = new URL(CONFIG.APPS_SCRIPT_URL);
+                Object.keys(parametros).forEach(key => url.searchParams.append(key, parametros[key]));
+                
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+                mostrarLoading(false);
+                return dados;
+            } catch (erro) {
+                mostrarLoading(false);
+                alert("Erro de conexão. Verifique sua internet e tente novamente.");
+                console.error(erro);
+                return null;
+            }
+        }
+
+        async function postAPI(dados) {
+            mostrarLoading(true);
+            try {
+                const resposta = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(dados)
+                });
+                const resultado = await resposta.json();
+                mostrarLoading(false);
+                return resultado;
+            } catch (erro) {
+                mostrarLoading(false);
+                alert("Erro ao enviar dados.");
+                return null;
+            }
+        }
+
+        // --- 5. LÓGICA DO APP ---
+        
+        async function fazerLogin() {
+            const codigo = document.getElementById('codigo').value;
+            const msg = document.getElementById('msg-login');
+            
+            if (!codigo) {
+                msg.textContent = "Digite seu código!";
+                msg.style.display = "block";
+                return;
+            }
+
+            msg.style.display = "none";
+            const resultado = await fetchAPI({ acao: 'login', codigo: codigo });
+
+            if (resultado && resultado.sucesso) {
+                usuarioAtual = { nome: resultado.nome, funcao: resultado.funcao };
+                localStorage.setItem('louvor_user', JSON.stringify(usuarioAtual));
+                mostrarApp();
+            } else {
+                msg.textContent = resultado ? resultado.erro : "Erro ao logar.";
+                msg.style.display = "block";
+            }
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('louvor_user');
+            usuarioAtual = null;
+            document.getElementById('codigo').value = '';
+            document.getElementById('tela-app').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'flex';
+        }
+
+        function mostrarApp() {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('tela-app').style.display = 'block';
+            document.getElementById('user-nome').textContent = "Olá, " + usuarioAtual.nome;
+            document.getElementById('user-funcao').textContent = usuarioAtual.funcao;
+            mudarAba('minhas'); // Carrega a tela inicial
+        }
+
+        // Navegação entre as abas
+        function mudarAba(aba) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const div = document.getElementById('conteudo-aba');
+            div.innerHTML = ''; // Limpa a tela
+
+            if (aba === 'minhas') carregarMinhasEscalas();
+            if (aba === 'geral') carregarProximaEscala();
+            if (aba === 'repertorio') carregarRepertorio();
+        }
+
+        // --- 6. TELAS DO APP (DASHBOARDS) ---
+
+        // Formata data do Google (ISO) para o padrão brasileiro
+        function formatarData(dataIso) {
+            const d = new Date(dataIso);
+            // Corrige fuso horário para evitar que caia 1 dia antes
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+            return d.toLocaleDateString('pt-BR');
+        }
+
+        async function carregarMinhasEscalas() {
+            const div = document.getElementById('conteudo-aba');
+            const res = await fetchAPI({ acao: 'minhasEscalas', nome: usuarioAtual.nome });
+
+            if (res && res.sucesso) {
+                if (res.escalas.length === 0) {
+                    div.innerHTML = `<div class="card"><p>Você não possui escalas futuras lançadas no sistema.</p></div>`;
+                    return;
+                }
+
+                let html = '';
+                res.escalas.forEach(esc => {
+                    const dataFormatada = formatarData(esc.data);
+                    const pendente = !esc.status || esc.status.toUpperCase() !== 'CONFIRMADO';
+                    
+                    html += `
+                    <div class="card item-escala">
+                        <h3 style="margin:0 0 5px 0;">🗓️ ${dataFormatada}</h3>
+                        <p style="margin:0;"><strong>Função:</strong> ${esc.funcao}</p>
+                        <p style="margin:0;">
+                            ${pendente ? `<span class="status-pendente">⚠️ Aguardando Confirmação</span>` : `<span class="status-confirmado">✅ Presença Confirmada</span>`}
+                        </p>
+                        ${pendente ? `<button class="btn-success" style="margin-top:15px;" onclick="confirmar('${esc.data}')">Confirmar Presença</button>` : ''}
+                    </div>`;
+                });
+                div.innerHTML = html;
+            }
+        }
+
+        async function confirmar(dataIso) {
+            const res = await postAPI({ acao: 'confirmarPresenca', nome: usuarioAtual.nome, dataCulto: dataIso });
+            if (res && res.sucesso) {
+                alert("Presença confirmada com sucesso!");
+                carregarMinhasEscalas(); // Recarrega a tela
+            } else {
+                alert("Erro ao confirmar. Tente novamente.");
+            }
+        }
+
+        async function carregarProximaEscala() {
+            const div = document.getElementById('conteudo-aba');
+            const res = await fetchAPI({ acao: 'proximaEscala' });
+
+            if (res && res.sucesso) {
+                if (!res.data) {
+                    div.innerHTML = `<div class="card"><p>Nenhuma escala geral cadastrada.</p></div>`;
+                    return;
+                }
+
+                let html = `<div class="card">
+                    <h3 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">Equipe do Culto - ${formatarData(res.data)}</h3>`;
+                
+                res.escalados.forEach(membro => {
+                    const statusIcon = (membro.status && membro.status.toUpperCase() === 'CONFIRMADO') ? '✅' : '⏳';
+                    html += `<p style="margin:8px 0; border-bottom:1px dashed #eee; padding-bottom:5px;">
+                        <strong>${membro.funcao}:</strong> ${membro.nomeMembro} ${statusIcon}
+                    </p>`;
+                });
+                html += `</div>`;
+                div.innerHTML = html;
+            }
+        }
+
+        async function carregarRepertorio() {
+            const div = document.getElementById('conteudo-aba');
+            const res = await fetchAPI({ acao: 'repertorio' });
+
+            if (res && res.sucesso) {
+                if (res.musicas.length === 0) {
+                    div.innerHTML = `<div class="card"><p>Nenhum repertório cadastrado para os próximos cultos.</p></div>`;
+                    return;
+                }
+
+                let html = '';
+                let dataAtual = '';
+
+                res.musicas.forEach(musica => {
+                    const dataStr = formatarData(musica.data);
+                    
+                    // Cria um cabeçalho sempre que mudar o culto
+                    if (dataStr !== dataAtual) {
+                        html += `<h3 style="margin-top:20px; border-left:4px solid var(--primary); padding-left:10px;">Culto - ${dataStr}</h3>`;
+                        dataAtual = dataStr;
+                    }
+
+                    // Se não tiver cifra lançada na planilha, oculta a caixinha
+                    const cifraHtml = musica.cifra ? `<div class="cifra-box">${musica.cifra}</div>` : '';
+
+                    html += `
+                    <div class="card" style="margin-bottom:10px; padding:15px;">
+                        <h4 style="margin:0 0 5px 0;">${musica.ordem || ''} - ${musica.musica}</h4>
+                        <p style="margin:0; font-size:14px; color:#555;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
+                        ${cifraHtml}
+                    </div>`;
+                });
+                div.innerHTML = html;
+            }
+        }
+
+        // --- Helpers ---
+        function mostrarLoading(mostrar) {
+            document.getElementById('loading').style.display = mostrar ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
