@@ -333,24 +333,24 @@
                         dataAtual = dataStr; 
                     }
                     
-                    // --- MÁGICA DOS LINKS ---
-                    // Se o sistema encontrar um link, transforma num botão verde clicável
-                    let cifraFormatada = '';
-                    if (musica.cifra) {
-                        cifraFormatada = musica.cifra.replace(
-                            /(https?:\/\/[^\s]+)/g, 
-                            '<br><a href="$1" target="_blank" style="color: var(--success); font-weight: bold; text-decoration: underline;">🔗 Acessar Link da Cifra</a>'
-                        );
-                    }
+                  // --- MÁGICA DOS LINKS ---
+let cifraFormatada = '';
+if (musica.cifra) {
+    cifraFormatada = musica.cifra.replace(
+        /(https?:\/\/[^\s]+)/g, 
+        // 1. Removi o <br> e adicionei um display: inline-block com um margin-top menor (8px) para o link não colar no texto de cima
+        '<a href="$1" target="_blank" style="color: var(--success); font-weight: bold; text-decoration: underline; display: inline-block; margin-top: 8px;">🔗 Acessar Link da Cifra</a>'
+    );
+}
                     
-                    const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
+const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
                     
-                    html += `
-                    <div class="card" style="margin-bottom:5px;">
-                        <h4 style="margin:0 0 22px 0;">${musica.ordem || ''} - ${musica.musica}</h4>
-                        <p style="margin:0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
-                        ${cifraHtml}
-                    </div>`;
+html += `
+<div class="card" style="margin-bottom:5px;">
+    <h4 style="margin:0 0 10px 0;">${musica.ordem || ''} - ${musica.musica}</h4>
+    <p style="margin:0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
+    ${cifraHtml}
+</div>`;
                 }); 
                 
                 div.innerHTML = html;
