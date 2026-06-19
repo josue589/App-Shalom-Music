@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      :root {
+        :root {
             --primary: #4655F6; /* Azul da logo */
             --success: #A3E635; /* Verde limão da logo */
             --bg: #F4F7FB;
@@ -19,7 +19,6 @@
         body { 
             font-family: 'Poppins', sans-serif; 
             background-color: var(--bg); 
-            /* Fundo com um leve degradê muito suave para não ficar 100% cinzento */
             background-image: linear-gradient(135deg, rgba(70, 85, 246, 0.03) 0%, rgba(163, 230, 53, 0.05) 100%);
             color: var(--text); 
             margin: 0; 
@@ -29,93 +28,18 @@
         }
         
         .container { 
-    padding: 20px; 
-    max-width: 600px; 
-    margin: 0 auto; /* Mantém tudo centrado no meio do ecrã */
-    margin-top: 8vh; /* <--- É ESTA LINHA QUE EMPURRA TUDO PARA BAIXO */
-}
+            padding: 20px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            margin-top: 8vh; /* Empurra o conteúdo para baixo */
+        }
         
         /* Telas e Animações */
-        #tela-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; }
+        #tela-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
         #tela-app { display: none; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Cartões com a BARRA LATERAL EM DEGRADÊ */
-        .card { 
-            background: var(--card-bg); 
-            padding: 25px 25px; 
-            border-radius: 16px; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.04); 
-            margin-bottom: 20px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            position: relative;
-            overflow: hidden;
-            border: none;
-        }
-        
-        /* A mágica da barra lateral lateral esquerda (Azul para Verde) */
-        .card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 6px;
-            background: linear-gradient(to bottom, var(--primary), var(--success));
-        }
-        .card::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 6px;
-            background: linear-gradient(to bottom, var(--primary), var(--success));
-        }
-        /* Inputs */
-        input { width: 100%; padding: 16px; margin: 15px 0; border: 2px solid #E5E7EB; border-radius: 12px; font-size: 16px; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: 0.3s; outline: none; background: #F9FAFB; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(70, 85, 246, 0.1); background: white; }
-        
-        /* Botões */
-        button { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 6px 15px rgba(70, 85, 246, 0.25); }
-        button:active { transform: translateY(2px); box-shadow: 0 2px 6px rgba(70, 85, 246, 0.2); }
-        button.btn-success { background: linear-gradient(135deg, #10B981, #34D399); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
-        button.btn-logout { background: white; color: #EF4444; padding: 8px 16px; width: auto; font-size: 14px; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15); font-weight: 600; border: 1px solid #FEE2E2; border-radius: 10px; }
-        
-        /* Navegação Estilo App Premium (Fundo cinza, botão branco) */
-        .nav-tabs { 
-            display: flex; 
-            background: #E5E7EB; 
-            padding: 6px; 
-            border-radius: 14px; 
-            margin-bottom: 30px; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .nav-tabs::-webkit-scrollbar { display: none; }
-        .nav-tab { 
-            flex: 1; 
-            padding: 12px 10px; 
-            text-align: center; 
-            background: transparent; 
-            border-radius: 10px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            color: var(--text-light); 
-            white-space: nowrap; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            border: none;
-        }
-        .nav-tab.active { 
-            background: white; 
-            color: var(--primary); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
-        }
-        
-      /* 1. CABEÇALHO (Caixa superior destacada) */
+        /* 1. CABEÇALHO (Caixa superior com Foto, Nome e Botão Sair) */
         .header-app { 
             background: var(--card-bg); 
             padding: 15px 20px; 
@@ -143,7 +67,7 @@
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            border: 2px solid var(--success); /* Bordinha verde da sua logo */
+            border: 2px solid var(--success);
             padding: 2px;
             overflow: hidden;
             flex-shrink: 0;
@@ -151,23 +75,18 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .profile-pic img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+        .profile-pic img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        /* Textos Centralizados */
+        /* Textos Centralizados no Cabeçalho */
         .user-info {
-            flex-grow: 1; /* Faz o texto ocupar todo o espaço do meio */
-            text-align: center; /* Centraliza o texto */
+            flex-grow: 1;
+            text-align: center;
             padding: 0 10px;
         }
 
         .header-app h3 { margin: 0 0 4px 0; color: var(--text); font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
         
-        /* Função do utilizador pintada com o degradê da logo */
+        /* Função pintada com o degradê */
         #user-funcao { 
             background: linear-gradient(135deg, var(--primary), var(--success)); 
             -webkit-background-clip: text; 
@@ -177,134 +96,109 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        /* 2. BARRAS LATERAIS (Caixas da esquerda e direita - Apenas para Desktop) */
+
+        /* BARRAS LATERAIS NO COMPUTADOR */
         @media (min-width: 800px) {
-            /* Barra Esquerda (Tom Azul) */
             body::before {
-                content: '';
-                position: fixed;
-                top: 0; left: 0; bottom: 0;
-                width: 60px; /* Grossura da barra */
-                background: linear-gradient(to bottom, var(--primary), #2c38af);
-                z-index: 100;
-                box-shadow: 4px 0 20px rgba(70, 85, 246, 0.15);
+                content: ''; position: fixed; top: 0; left: 0; bottom: 0; width: 60px;
+                background: linear-gradient(to bottom, var(--primary), #2c38af); z-index: 100; box-shadow: 4px 0 20px rgba(70, 85, 246, 0.15);
             }
-            
-            /* Barra Direita (Tom Verde) */
             body::after {
-                content: '';
-                position: fixed;
-                top: 0; right: 0; bottom: 0;
-                width: 60px; /* Grossura da barra */
-                background: linear-gradient(to bottom, var(--success), #7cb522);
-                z-index: 100;
-                box-shadow: -4px 0 20px rgba(163, 230, 53, 0.15);
+                content: ''; position: fixed; top: 0; right: 0; bottom: 0; width: 60px;
+                background: linear-gradient(to bottom, var(--success), #7cb522); z-index: 100; box-shadow: -4px 0 20px rgba(163, 230, 53, 0.15);
             }
-            
-            /* (Bônus) Fita no topo da tela para ligar as duas barras laterais */
             html::before {
-                content: '';
-                position: fixed;
-                top: 0; left: 0; right: 0;
-                height: 50px;
-                background: linear-gradient(to right, var(--primary), var(--success));
-                z-index: 101;
+                content: ''; position: fixed; top: 0; left: 0; right: 0; height: 10px;
+                background: linear-gradient(to right, var(--primary), var(--success)); z-index: 101;
             }
         }
-        /* --- ESTILOS DO CALENDÁRIO --- */
-        .calendar-container { 
-            background: white; 
-            border-radius: 16px; 
-            padding: 20px; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.04); 
-            margin-bottom: 25px; 
-            border-top: 5px solid var(--primary);
+
+        /* Cartões Gerais */
+        .card { 
+            background: var(--card-bg); padding: 25px 25px; border-radius: 16px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04); margin-bottom: 20px; width: 100%; box-sizing: border-box; 
+            position: relative; overflow: hidden; border: none;
         }
-        .calendar-header { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            margin-bottom: 15px; 
-            font-weight: 700; 
-            color: var(--primary);
-            font-size: 18px;
-            text-transform: capitalize;
+        
+        .card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+            background: linear-gradient(to bottom, var(--primary), var(--success));
         }
-        .calendar-grid { 
-            display: grid; 
-            grid-template-columns: repeat(7, 1fr); 
-            gap: 8px; 
-            text-align: center; 
-        }
-        .calendar-day-name { 
-            font-size: 12px; 
-            color: var(--text-light); 
-            font-weight: 700; 
-            text-transform: uppercase;
-        }
-        .calendar-day { 
-            padding: 10px 0; 
-            font-size: 14px; 
-            border-radius: 10px; 
-            background: #F4F7FB; 
-            color: var(--text);
-            font-weight: 500;
-        }
+        
+        /* Inputs e Botões */
+        input { width: 100%; padding: 16px; margin: 15px 0; border: 2px solid #E5E7EB; border-radius: 12px; font-size: 16px; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: 0.3s; outline: none; background: #F9FAFB; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(70, 85, 246, 0.1); background: white; }
+        
+        button { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; font-size: 16px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 6px 15px rgba(70, 85, 246, 0.25); }
+        button:active { transform: translateY(2px); box-shadow: 0 2px 6px rgba(70, 85, 246, 0.2); }
+        button.btn-success { background: linear-gradient(135deg, #10B981, #34D399); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        button.btn-logout { background: white; color: #EF4444; padding: 8px 16px; width: auto; font-size: 14px; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15); font-weight: 600; border: 1px solid #FEE2E2; border-radius: 10px; }
+        
+        /* Navegação */
+        .nav-tabs { display: flex; background: #E5E7EB; padding: 6px; border-radius: 14px; margin-bottom: 30px; overflow-x: auto; scrollbar-width: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .nav-tab { flex: 1; padding: 12px 10px; text-align: center; background: transparent; border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--text-light); white-space: nowrap; cursor: pointer; transition: all 0.3s ease; border: none; }
+        .nav-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        
+        /* Status */
+        .status-confirmado { color: #059669; background: #D1FAE5; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; display: inline-block; margin-top: 10px; border: 1px solid #A7F3D0; }
+        .status-pendente { color: #D97706; background: #FEF3C7; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; display: inline-block; margin-top: 10px; border: 1px solid #FDE68A; }
+        
+        /* Cifra */
+        .cifra-box { background: #1F2937; color: #E5E7EB; padding: 15px; border-radius: 12px; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 14px; margin-top: 15px; overflow-x: auto; border-left: 4px solid var(--success); }
+        
+        #loading { display: none; text-align: center; color: var(--primary); font-weight: 600; margin: 30px 0; font-size: 15px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        /* ESTILOS DO CALENDÁRIO */
+        .calendar-container { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.04); margin-bottom: 25px; border-top: 5px solid var(--primary); }
+        .calendar-header { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; font-weight: 700; color: var(--primary); font-size: 18px; text-transform: capitalize; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+        .calendar-day-name { font-size: 12px; color: var(--text-light); font-weight: 700; text-transform: uppercase; }
+        .calendar-day { padding: 10px 0; font-size: 14px; border-radius: 10px; background: #F4F7FB; color: var(--text); font-weight: 500; }
         .calendar-day.empty { background: transparent; }
         .calendar-day.today { border: 2px solid var(--primary); color: var(--primary); font-weight: 700; }
-        
-        /* O dia que a pessoa está escalada ganha a cor da logo! */
-        .calendar-day.scheduled { 
-            background: linear-gradient(135deg, var(--primary), var(--success)); 
-            color: white; 
-            font-weight: bold; 
-            box-shadow: 0 4px 10px rgba(70, 85, 246, 0.3); 
-            border: none;
-        }
+        .calendar-day.scheduled { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(70, 85, 246, 0.3); border: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- TELA DE LOGIN -->
         <div id="tela-login">
             <div class="card" style="text-align: center;">
-                <!-- IMAGEM DA LOGO AQUI -->
-                <img src="icon-192.png?v=2" alt="Logo Shalom Music" style="width: 100px; border-radius: 22px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <img src="icon-192.png?v=3" alt="Logo Shalom Music" style="width: 90px; border-radius: 22px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                 
                 <h2 style="margin-top:0; color: #1F2937; font-weight: 700;">Shalom Music</h2>
-                <p style="color: var(--text-light); font-size: 14px; margin-bottom: 20px;">Acesse com seu Password</p>
+                <p style="color: var(--text-light); font-size: 14px; margin-bottom: 20px;">Acesse com seu código</p>
                 <input type="password" id="codigo" placeholder="Ex: 1234">
                 <button onclick="fazerLogin()">Entrar no App</button>
                 <p id="msg-login" style="color: #EF4444; font-size: 14px; display: none; margin-top: 15px; font-weight: 500;"></p>
             </div>
         </div>
 
-        <!-- TELA PRINCIPAL DO APP -->
         <div id="tela-app">
-           <div class="header-app">
+            
+            <div class="header-app">
                 <div class="profile-pic">
                     <img id="img-perfil" src="" alt="Foto de Perfil">
                 </div>
                 
                 <div class="user-info">
-                    <h3 id="user-nome">Ol, Nome</h3>
+                    <h3 id="user-nome">Nome</h3>
                     <small id="user-funcao">Função</small>
                 </div>
 
                 <button class="btn-logout" onclick="fazerLogout()">Sair</button>
             </div>
 
-            <!-- Menus de Navegação -->
             <div class="nav-tabs">
                 <div class="nav-tab active" onclick="mudarAba('minhas')">Minhas Escalas</div>
-                <div class="nav-tab" onclick="mudarAba('geral')">Escala Geral</div>
+                <div class="nav-tab" onclick="mudarAba('geral')">Próxima Geral</div>
                 <div class="nav-tab" onclick="mudarAba('repertorio')">Repertório</div>
             </div>
 
             <div id="loading">Buscando dados...</div>
 
-            <!-- Conteúdo das Abas -->
             <div id="conteudo-aba"></div>
         </div>
     </div>
@@ -364,11 +258,12 @@
         function mostrarApp() {
             document.getElementById('tela-login').style.display = 'none'; 
             document.getElementById('tela-app').style.display = 'block';
-            document.getElementById('user-nome').textContent = 'usuarioAtual.nome;
+            
+            // Aqui o texto recebe APENAS o nome do usuário (Sem o Olá)
+            document.getElementById('user-nome').textContent = usuarioAtual.nome;
             document.getElementById('user-funcao').textContent = usuarioAtual.funcao; 
             
-            // --- MÁGICA DA FOTO DE PERFIL ---
-            // Cria um avatar com as letras do nome usando o azul da sua logo!
+            // Mágica da Foto de Perfil
             const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(usuarioAtual.nome)}&background=4655F6&color=fff&bold=true&rounded=true&size=120`;
             document.getElementById('img-perfil').src = avatarUrl;
 
@@ -390,49 +285,29 @@
             const res = await fetchAPI({ acao: 'minhasEscalas', nome: usuarioAtual.nome });
 
             if (res && res.sucesso) {
-                // 1. Descobrir os dias que o usuário está escalado neste mês
                 const diasEscalados = res.escalas.map(esc => {
                     const d = new Date(esc.data);
                     d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
                     return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(); 
                 });
 
-                // 2. Construir o Calendário do Mês Atual
-                const hoje = new Date();
-                const mes = hoje.getMonth();
-                const ano = hoje.getFullYear();
-                const primeiroDia = new Date(ano, mes, 1).getDay(); // 0 (Dom) a 6 (Sáb)
-                const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+                const hoje = new Date(); const mes = hoje.getMonth(); const ano = hoje.getFullYear();
+                const primeiroDia = new Date(ano, mes, 1).getDay(); const diasNoMes = new Date(ano, mes + 1, 0).getDate();
                 const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-                let htmlCalendario = `
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        📅 ${nomesMeses[mes]} ${ano}
-                    </div>
-                    <div class="calendar-grid">
-                        <div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div>
-                        <div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>
-                `;
+                let htmlCalendario = `<div class="calendar-container"><div class="calendar-header">📅 ${nomesMeses[mes]} ${ano}</div><div class="calendar-grid"><div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div><div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>`;
 
-                // Preencher os espaços vazios antes do dia 1
-                for (let i = 0; i < primeiroDia; i++) {
-                    htmlCalendario += `<div class="calendar-day empty"></div>`;
-                }
+                for (let i = 0; i < primeiroDia; i++) htmlCalendario += `<div class="calendar-day empty"></div>`;
 
-                // Preencher os dias do mês
                 for (let dia = 1; dia <= diasNoMes; dia++) {
                     const dataCheck = dia + '/' + mes + '/' + ano;
                     const isEscalado = diasEscalados.includes(dataCheck);
                     const isHoje = (dia === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) ? 'today' : '';
                     const classEscalado = isEscalado ? 'scheduled' : '';
-                    
                     htmlCalendario += `<div class="calendar-day ${isHoje} ${classEscalado}">${dia}</div>`;
                 }
-
                 htmlCalendario += `</div></div>`;
 
-                // 3. Montar a lista de escalas logo abaixo do calendário
                 let htmlLista = '';
                 if (res.escalas.length === 0) {
                     htmlLista = `<div class="card"><p style="color:#666;">Você não possui escalas futuras lançadas no sistema.</p></div>`;
@@ -440,19 +315,9 @@
                     res.escalas.forEach(esc => {
                         const dataFormatada = formatarData(esc.data);
                         const pendente = !esc.status || esc.status.toUpperCase() !== 'CONFIRMADO';
-                        htmlLista += `
-                        <div class="card item-escala">
-                            <h3 style="margin:0 0 8px 0; color:var(--text);">🗓️ ${dataFormatada}</h3>
-                            <p style="margin:0; color:var(--text-light);"><strong>Função:</strong> ${esc.funcao}</p>
-                            <p style="margin:0;">
-                                ${pendente ? `<span class="status-pendente">Aguardando Confirmação</span>` : `<span class="status-confirmado">Presença Confirmada</span>`}
-                            </p>
-                            ${pendente ? `<button class="btn-success" style="margin-top:15px;" onclick="confirmar('${esc.data}')">Confirmar Presença</button>` : ''}
-                        </div>`;
+                        htmlLista += `<div class="card item-escala"><h3 style="margin:0 0 8px 0; color:var(--text);">🗓️ ${dataFormatada}</h3><p style="margin:0; color:var(--text-light);"><strong>Função:</strong> ${esc.funcao}</p><p style="margin:0;">${pendente ? `<span class="status-pendente">Aguardando Confirmação</span>` : `<span class="status-confirmado">Presença Confirmada</span>`}</p>${pendente ? `<button class="btn-success" style="margin-top:15px;" onclick="confirmar('${esc.data}')">Confirmar Presença</button>` : ''}</div>`;
                     });
                 }
-
-                // Exibe o calendário + a lista na tela
                 div.innerHTML = htmlCalendario + htmlLista;
             }
         }
@@ -462,99 +327,54 @@
             if (res && res.sucesso) { alert("Presença confirmada!"); carregarMinhasEscalas(); } else { alert("Erro ao confirmar."); }
         }
 
-       async function carregarProximaEscala() {
+        // Carrega APENAS O CALENDÁRIO na Aba Geral
+        async function carregarProximaEscala() {
             const div = document.getElementById('conteudo-aba');
             const res = await fetchAPI({ acao: 'proximaEscala' });
 
             if (res && res.sucesso) {
-                if (!res.data) {
-                    div.innerHTML = `<div class="card"><p style="color:#666;">Nenhuma escala geral cadastrada.</p></div>`;
-                    return;
-                }
+                if (!res.data) { div.innerHTML = `<div class="card"><p style="color:#666;">Nenhuma escala geral cadastrada.</p></div>`; return; }
 
-                // --- 1. PREPARAR DADOS DO CALENDÁRIO ---
-                const dataCulto = new Date(res.data);
-                dataCulto.setMinutes(dataCulto.getMinutes() + dataCulto.getTimezoneOffset());
-                const diaCulto = dataCulto.getDate();
-                const mes = dataCulto.getMonth();
-                const ano = dataCulto.getFullYear();
+                const dataCulto = new Date(res.data); dataCulto.setMinutes(dataCulto.getMinutes() + dataCulto.getTimezoneOffset());
+                const diaCulto = dataCulto.getDate(); const mes = dataCulto.getMonth(); const ano = dataCulto.getFullYear();
                 
-                const primeiroDia = new Date(ano, mes, 1).getDay();
-                const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+                const primeiroDia = new Date(ano, mes, 1).getDay(); const diasNoMes = new Date(ano, mes + 1, 0).getDate();
                 const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-                // --- 2. DESENHAR APENAS O CALENDÁRIO ---
-                let htmlCalendario = `
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        📅 Culto  - ${nomesMeses[mes]}
-                    </div>
-                    <div class="calendar-grid">
-                        <div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div>
-                        <div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>
-                `;
+                let htmlCalendario = `<div class="calendar-container"><div class="calendar-header">📅 Culto Geral - ${nomesMeses[mes]}</div><div class="calendar-grid"><div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div><div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>`;
 
-                // Espaços vazios
-                for (let i = 0; i < primeiroDia; i++) {
-                    htmlCalendario += `<div class="calendar-day empty"></div>`;
-                }
+                for (let i = 0; i < primeiroDia; i++) htmlCalendario += `<div class="calendar-day empty"></div>`;
 
                 const hoje = new Date();
                 for (let dia = 1; dia <= diasNoMes; dia++) {
                     const isHoje = (dia === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) ? 'today' : '';
-                    // Destaca o dia do culto geral
                     const isDiaCulto = (dia === diaCulto) ? 'scheduled' : ''; 
-                    
                     htmlCalendario += `<div class="calendar-day ${isHoje} ${isDiaCulto}">${dia}</div>`;
                 }
                 htmlCalendario += `</div></div>`;
-
-                // Coloca APENAS o calendário na tela (removemos o htmlLista)
                 div.innerHTML = htmlCalendario;
             }
         }
 
-       async function carregarRepertorio() {
-            const div = document.getElementById('conteudo-aba'); 
-            const res = await fetchAPI({ acao: 'repertorio' });
-            
+        async function carregarRepertorio() {
+            const div = document.getElementById('conteudo-aba'); const res = await fetchAPI({ acao: 'repertorio' });
             if (res && res.sucesso) {
-                if (res.musicas.length === 0) { 
-                    div.innerHTML = `<div class="card"><p style="color:#666;">Nenhum repertório cadastrado.</p></div>`; 
-                    return; 
-                }
-                
-                let html = ''; 
-                let dataAtual = '';
-                
+                if (res.musicas.length === 0) { div.innerHTML = `<div class="card"><p style="color:#666;">Nenhum repertório cadastrado.</p></div>`; return; }
+                let html = ''; let dataAtual = '';
                 res.musicas.forEach(musica => {
                     const dataStr = formatarData(musica.data);
-                    if (dataStr !== dataAtual) { 
-                        html += `<h3 style="margin-top:20px; margin-bottom:10px; color:var(--primary);">Culto - ${dataStr}</h3>`; 
-                        dataAtual = dataStr; 
+                    if (dataStr !== dataAtual) { html += `<h3 style="margin-top:20px; margin-bottom:10px; color:var(--primary);">Culto - ${dataStr}</h3>`; dataAtual = dataStr; }
+                    
+                    let cifraFormatada = '';
+                    if (musica.cifra) {
+                        cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
+                            if (url.includes('drive.google.com')) return '<br><a href="' + url + '" target="_blank" style="color: var(--primary); font-weight: bold; text-decoration: underline;">📄 Abrir no Google Drive</a>';
+                            return '<br><a href="' + url + '" target="_blank" style="color: var(--success); font-weight: bold; text-decoration: underline;">🔗 Acessar Link da Cifra</a>';
+                        });
                     }
-                    
-                  // --- MÁGICA DOS LINKS ---
-let cifraFormatada = '';
-if (musica.cifra) {
-    cifraFormatada = musica.cifra.replace(
-        /(https?:\/\/[^\s]+)/g, 
-        // 1. Removi o <br> e adicionei um display: inline-block com um margin-top menor (8px) para o link não colar no texto de cima
-        '<a href="$1" target="_blank" style="color: var(--success); font-weight: bold; text-decoration: underline; display: inline-block; margin-top: 8px;">🔗 Acessar Link da Cifra</a>'
-    );
-}
-                    
-const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
-                    
-html += `
-<div class="card" style="margin-bottom:5px;">
-    <h4 style="margin:0 0 10px 0;">${musica.ordem || ''} - ${musica.musica}</h4>
-    <p style="margin:0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
-    ${cifraHtml}
-</div>`;
-                }); 
-                
-                div.innerHTML = html;
+                    const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
+                    html += `<div class="card" style="margin-bottom:12px;"><h4 style="margin:0 0 5px 0;">${musica.ordem || ''} - ${musica.musica}</h4><p style="margin:0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>${cifraHtml}</div>`;
+                }); div.innerHTML = html;
             }
         }
 
