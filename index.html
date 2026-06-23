@@ -441,11 +441,11 @@
                             dataAtual = dataStr; 
                         }
                         
-                        let cifraFormatada = '';
+                       let cifraFormatada = '';
                         if (musica.cifra) {
                             cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
-                                if (url.includes('drive.google.com')) return `<a href="${url}" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Cifra - ${musica.musica}</a>`;
-                                return `<a href="${url}" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">🔗 Cifra - ${musica.musica}</a>`;
+                                if (url.includes('drive.google.com')) return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Abrir no Google Drive</a>';
+                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">🔗 Acessar Link da Cifra</a>';
                             });
                         }
                         }
