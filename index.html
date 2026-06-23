@@ -16,7 +16,19 @@
             --card-bg: #FFFFFF;
         }
         
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); background-image: linear-gradient(135deg, rgba(70, 85, 246, 0.03) 0%, rgba(163, 230, 53, 0.05) 100%); color: var(--text); margin: 0; padding: 0; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg); 
+            background-image: linear-gradient(135deg, rgba(70, 85, 246, 0.03) 0%, rgba(163, 230, 53, 0.05) 100%);
+            /* Se quiser usar uma imagem de fundo, apague o background-image acima e use a linha abaixo: */
+            /* background-image: url('LINK_DA_SUA_IMAGEM_AQUI.jpg'); background-size: cover; background-position: center; background-attachment: fixed; */
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            -webkit-font-smoothing: antialiased; 
+            min-height: 100vh; 
+        }
+        
         .container { padding: 20px; max-width: 600px; margin: 0 auto; margin-top: 8vh; }
         
         #tela-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
@@ -36,7 +48,7 @@
         @media (min-width: 800px) {
             body::before { content: ''; position: fixed; top: 0; left: 0; bottom: 0; width: 60px; background: linear-gradient(to bottom, var(--primary), #2c38af); z-index: 100; box-shadow: 4px 0 20px rgba(70, 85, 246, 0.15); }
             body::after { content: ''; position: fixed; top: 0; right: 0; bottom: 0; width: 60px; background: linear-gradient(to bottom, var(--success), #7cb522); z-index: 100; box-shadow: -4px 0 20px rgba(163, 230, 53, 0.15); }
-            html::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 45px; background: linear-gradient(to right, var(--primary), var(--success)); z-index: 101; }
+            html::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 10px; background: linear-gradient(to right, var(--primary), var(--success)); z-index: 101; }
         }
 
         .card { background: var(--card-bg); padding: 25px 25px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.04); margin-bottom: 20px; width: 100%; box-sizing: border-box; position: relative; overflow: hidden; border: none; }
@@ -48,6 +60,7 @@
         button { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; font-size: 16px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 6px 15px rgba(70, 85, 246, 0.25); }
         button:active { transform: translateY(2px); box-shadow: 0 2px 6px rgba(70, 85, 246, 0.2); }
         button.btn-success { background: linear-gradient(135deg, #10B981, #34D399); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        
         button.btn-logout { 
             background: linear-gradient(to right, var(--primary), var(--success)); 
             color: white; 
@@ -59,12 +72,11 @@
             border: none; 
             border-radius: 10px; 
         }
-        button.btn-config { background: white; color: var(--text); padding: 8px 12px; width: auto; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-weight: 600; border: 1px solid #E5E7EB; border-radius: 10px; display: flex; align-items: center; justify-content: center;}
         
-   /* Navegação com Fundo Degradê */
+        /* Navegação com Degradê */
         .nav-tabs { 
             display: flex; 
-            background: linear-gradient(to right, var(--primary), var(--success)); /* 👈 Aqui entra o degradê! */
+            background: linear-gradient(to right, var(--primary), var(--success)); 
             padding: 6px; 
             border-radius: 14px; 
             margin-bottom: 30px; 
@@ -73,30 +85,13 @@
             box-shadow: 0 4px 15px rgba(70, 85, 246, 0.2); 
         }
         .nav-tabs::-webkit-scrollbar { display: none; }
-        
-        .nav-tab { 
-            flex: 1; 
-            padding: 12px 10px; 
-            text-align: center; 
-            background: transparent; 
-            border-radius: 10px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            color: rgba(255, 255, 255, 0.9); /* 👈 Letras brancas para dar leitura no fundo colorido */
-            white-space: nowrap; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            border: none; 
-        }
-        
-        .nav-tab.active { 
-            background: white; 
-            color: var(--primary); /* 👈 A aba selecionada fica branca com a letra azul */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
+        .nav-tab { flex: 1; padding: 12px 10px; text-align: center; background: transparent; border-radius: 10px; font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, 0.9); white-space: nowrap; cursor: pointer; transition: all 0.3s ease; border: none; }
+        .nav-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         
         .status-confirmado { color: #059669; background: #D1FAE5; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; display: inline-block; margin-top: 10px; border: 1px solid #A7F3D0; }
         .status-pendente { color: #D97706; background: #FEF3C7; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; display: inline-block; margin-top: 10px; border: 1px solid #FDE68A; }
+        
+        /* Caixa de Cifras e Links */
         .cifra-box { 
             background: linear-gradient(to right, var(--primary), var(--success)); 
             color: white; 
@@ -110,6 +105,7 @@
             border: none; 
             box-shadow: 0 4px 15px rgba(70, 85, 246, 0.2);
         }
+        
         #loading { display: none; text-align: center; color: var(--primary); font-weight: 600; margin: 30px 0; font-size: 15px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
@@ -125,8 +121,7 @@
 </head>
 <body>
 
-<div class="container">
-        <!-- TELA DE LOGIN -->
+    <div class="container">
         <div id="tela-login">
             <div class="card" style="text-align: center;">
                 <img src="icon-192.png?v=3" alt="Logo Shalom Music" style="width: 90px; border-radius: 22px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
@@ -138,10 +133,8 @@
             </div>
         </div>
 
-        <!-- TELA PRINCIPAL DO APP -->
         <div id="tela-app">
             
-            <!-- CABEÇALHO DO APP COM FOTO CLICÁVEL -->
             <div class="header-app">
                 <div class="profile-pic" onclick="abrirConfiguracoes()" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Editar Perfil">
                     <img id="img-perfil" src="" alt="Foto de Perfil">
@@ -155,7 +148,6 @@
                 <button class="btn-logout" onclick="fazerLogout()">Sair</button>
             </div>
 
-            <!-- TELA DE CONFIGURAÇÕES -->
             <div id="tela-config" style="display: none; animation: fadeIn 0.4s ease;">
                 <div class="card">
                     <h3 style="margin-top:0; color:var(--primary); text-align:center; margin-bottom: 20px;">Configurações do Perfil</h3>
@@ -177,18 +169,16 @@
                 </div>
             </div>
 
-            <!-- MENUS DE NAVEGAÇÃO -->
             <div id="area-conteudo-principal">
                 <div class="nav-tabs">
                     <div class="nav-tab active" onclick="mudarAba('minhas')">Minhas Escalas</div>
-                    <div class="nav-tab" onclick="mudarAba('geral')">Escalas Gerais</div>
+                    <div class="nav-tab" onclick="mudarAba('geral')">Próxima Geral</div>
                     <div class="nav-tab" onclick="mudarAba('repertorio')">Repertório</div>
-                    <div class="nav-tab" id="tab-admin" onclick="mudarAba('admin')" style="display:none; color:#00000; font-weight:800;">Visão Geral</div>
+                    <div class="nav-tab" id="tab-admin" onclick="mudarAba('admin')" style="display:none; font-weight:800;">Visão Geral</div>
                 </div>
                 <div id="loading">Buscando dados...</div>
                 <div id="conteudo-aba"></div>
             </div>
-            
         </div>
     </div>
 
@@ -197,7 +187,7 @@
     <script>
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
         let usuarioAtual = null;
-        let novaFotoBase64 = null; // Guardará a foto espremida
+        let novaFotoBase64 = null;
 
         window.onload = () => {
             const userSalvo = localStorage.getItem('louvor_user');
@@ -211,7 +201,7 @@
                 Object.keys(parametros).forEach(key => url.searchParams.append(key, parametros[key]));
                 const resposta = await fetch(url); const dados = await resposta.json();
                 mostrarLoading(false); return dados;
-            } catch (erro) { mostrarLoading(false); alert("Erro de conexão."); return null; }
+            } catch (erro) { mostrarLoading(false); alert("Erro de conexão com o banco de dados."); return null; }
         }
 
         async function postAPI(dados) {
@@ -230,7 +220,6 @@
             msg.style.display = "none";
             const resultado = await fetchAPI({ acao: 'login', codigo: codigo });
             if (resultado && resultado.sucesso) {
-                // Modificado para poder receber a foto no futuro
                 usuarioAtual = { nome: resultado.nome, funcao: resultado.funcao, foto: resultado.foto || null, codigoOriginal: codigo };
                 localStorage.setItem('louvor_user', JSON.stringify(usuarioAtual)); mostrarApp();
             } else { msg.textContent = resultado ? resultado.erro : "Erro ao logar."; msg.style.display = "block"; }
@@ -239,7 +228,7 @@
         function fazerLogout() {
             localStorage.removeItem('louvor_user'); usuarioAtual = null; document.getElementById('codigo').value = '';
             document.getElementById('tela-app').style.display = 'none'; document.getElementById('tela-login').style.display = 'flex';
-            fecharConfiguracoes(); // Garante que volta limpo
+            fecharConfiguracoes();
         }
 
         function mostrarApp() {
@@ -247,30 +236,27 @@
             document.getElementById('tela-app').style.display = 'block';
             document.getElementById('user-nome').textContent = usuarioAtual.nome;
             document.getElementById('user-funcao').textContent = usuarioAtual.funcao; 
-            // --- MÁGICA DA ABA ADMIN ---
-            // Se a função da pessoa for Ministro, Líder ou Administrador, mostra a aba secreta!
-            const f = usuarioAtual.funcao.toUpperCase();
-            if (f === "MINISTRO" || f === "ADMINISTRADOR" || f === "LÍDER" || f === "LIDER") {
-                document.getElementById('tab-admin').style.display = 'block';
-            } else {
-                document.getElementById('tab-admin').style.display = 'none';
-            }
             
-            // Se o usuário tiver uma foto salva, usa ela. Senão, gera as iniciais!
             if (usuarioAtual.foto) {
                 document.getElementById('img-perfil').src = usuarioAtual.foto;
             } else {
                 const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(usuarioAtual.nome)}&background=4655F6&color=fff&bold=true&rounded=true&size=120`;
                 document.getElementById('img-perfil').src = avatarUrl;
             }
+
+            const f = usuarioAtual.funcao.toUpperCase();
+            if (f === "MINISTRO" || f === "ADMINISTRADOR" || f === "LÍDER" || f === "LIDER") {
+                document.getElementById('tab-admin').style.display = 'block';
+            } else {
+                document.getElementById('tab-admin').style.display = 'none';
+            }
+
             mudarAba('minhas');
         }
 
-        /* --- FUNÇÕES DA TELA DE CONFIGURAÇÕES --- */
         function abrirConfiguracoes() {
             document.getElementById('area-conteudo-principal').style.display = 'none';
             document.getElementById('tela-config').style.display = 'block';
-            
             document.getElementById('novo-nome').value = usuarioAtual.nome;
             document.getElementById('novo-codigo').value = ''; 
             document.getElementById('preview-nova-foto').src = document.getElementById('img-perfil').src;
@@ -282,7 +268,6 @@
             document.getElementById('area-conteudo-principal').style.display = 'block';
         }
 
-        // Mágica para espremer a foto e não travar o banco de dados
         function carregarPreviewFoto(event) {
             const file = event.target.files[0];
             if (file) {
@@ -291,13 +276,12 @@
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        const tamanhoMaximo = 150; // Deixa a foto pequenininha (150x150 pixels)
+                        const tamanhoMaximo = 150;
                         const scale = tamanhoMaximo / img.width;
                         canvas.width = tamanhoMaximo; canvas.height = img.height * scale;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        novaFotoBase64 = canvas.toDataURL('image/jpeg', 0.7); // 70% de qualidade
+                        novaFotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
                         document.getElementById('preview-nova-foto').src = novaFotoBase64;
                     }
                     img.src = e.target.result;
@@ -306,52 +290,33 @@
             }
         }
 
-      async function salvarConfiguracoes() {
+        async function salvarConfiguracoes() {
             const novoNome = document.getElementById('novo-nome').value.trim();
             const novoCodigo = document.getElementById('novo-codigo').value.trim();
-            
-            if (!novoNome) {
-                alert("O nome não pode ficar vazio!");
-                return;
-            }
+            if (!novoNome) { alert("O nome não pode ficar vazio!"); return; }
 
-            // Prepara o "pacote" de dados para enviar para a planilha
-            const dados = {
-                acao: 'salvarPerfil',
-                codigoAtual: usuarioAtual.codigoOriginal,
-                novoNome: novoNome,
-                novoCodigo: novoCodigo,
-                novaFoto: novaFotoBase64 // Vai nulo se a pessoa não escolheu foto nova
-            };
-
+            const dados = { acao: 'salvarPerfil', codigoAtual: usuarioAtual.codigoOriginal, novoNome: novoNome, novoCodigo: novoCodigo, novaFoto: novaFotoBase64 };
             const res = await postAPI(dados);
 
             if (res && res.sucesso) {
                 alert("Perfil atualizado com sucesso!");
-                
-                // Atualiza a memória do celular
                 usuarioAtual.nome = novoNome;
                 if (novoCodigo) usuarioAtual.codigoOriginal = novoCodigo;
                 if (novaFotoBase64) usuarioAtual.foto = novaFotoBase64;
-                
                 localStorage.setItem('louvor_user', JSON.stringify(usuarioAtual));
-                
-                // Atualiza a tela instantaneamente
                 document.getElementById('user-nome').textContent = usuarioAtual.nome;
                 if (usuarioAtual.foto) document.getElementById('img-perfil').src = usuarioAtual.foto;
-                
                 fecharConfiguracoes();
-            } else {
-                alert("Erro ao salvar: " + (res ? res.erro : "Falha na conexão."));
-            }
+            } else { alert("Erro ao salvar: " + (res ? res.erro : "Falha na conexão.")); }
         }
-
-        /* --- FIM DAS CONFIGURAÇÕES --- */
 
         function mudarAba(aba) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active');
             const div = document.getElementById('conteudo-aba'); div.innerHTML = '';
-            if (aba === 'minhas') carregarMinhasEscalas(); if (aba === 'geral') carregarProximaEscala(); if (aba === 'repertorio') carregarRepertorio();if (aba === 'admin') carregarTodasEscalas();
+            if (aba === 'minhas') carregarMinhasEscalas(); 
+            if (aba === 'geral') carregarProximaEscala(); 
+            if (aba === 'repertorio') carregarRepertorio();
+            if (aba === 'admin') carregarTodasEscalas();
         }
 
         function formatarData(dataIso) {
@@ -370,160 +335,3 @@
 
                 const hoje = new Date(); const mes = hoje.getMonth(); const ano = hoje.getFullYear();
                 const primeiroDia = new Date(ano, mes, 1).getDay(); const diasNoMes = new Date(ano, mes + 1, 0).getDate();
-                const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-                let htmlCalendario = `<div class="calendar-container"><div class="calendar-header">📅 ${nomesMeses[mes]} ${ano}</div><div class="calendar-grid"><div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div><div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>`;
-                for (let i = 0; i < primeiroDia; i++) htmlCalendario += `<div class="calendar-day empty"></div>`;
-                for (let dia = 1; dia <= diasNoMes; dia++) {
-                    const dataCheck = dia + '/' + mes + '/' + ano;
-                    const isEscalado = diasEscalados.includes(dataCheck);
-                    const isHoje = (dia === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) ? 'today' : '';
-                    const classEscalado = isEscalado ? 'scheduled' : '';
-                    htmlCalendario += `<div class="calendar-day ${isHoje} ${classEscalado}">${dia}</div>`;
-                }
-                htmlCalendario += `</div></div>`;
-
-                let htmlLista = '';
-                if (res.escalas.length === 0) {
-                    htmlLista = `<div class="card"><p style="color:#666;">Você não possui escalas futuras lançadas no sistema.</p></div>`;
-                } else {
-                    res.escalas.forEach(esc => {
-                        const dataFormatada = formatarData(esc.data);
-                        const pendente = !esc.status || esc.status.toUpperCase() !== 'CONFIRMADO';
-                        htmlLista += `<div class="card item-escala"><h3 style="margin:0 0 8px 0; color:var(--text);">🗓️ ${dataFormatada}</h3><p style="margin:0; color:var(--text-light);"><strong>Função:</strong> ${esc.funcao}</p><p style="margin:0;">${pendente ? `<span class="status-pendente">Aguardando Confirmação</span>` : `<span class="status-confirmado">Presença Confirmada</span>`}</p>${pendente ? `<button class="btn-success" style="margin-top:15px;" onclick="confirmar('${esc.data}')">Confirmar Presença</button>` : ''}</div>`;
-                    });
-                }
-                div.innerHTML = htmlCalendario + htmlLista;
-            }
-        }
-
-        async function confirmar(dataIso) {
-            const res = await postAPI({ acao: 'confirmarPresenca', nome: usuarioAtual.nome, dataCulto: dataIso });
-            if (res && res.sucesso) { alert("Presença confirmada!"); carregarMinhasEscalas(); } else { alert("Erro ao confirmar."); }
-        }
-
-        async function carregarProximaEscala() {
-            const div = document.getElementById('conteudo-aba');
-            const res = await fetchAPI({ acao: 'proximaEscala' });
-
-            if (res && res.sucesso) {
-                if (!res.data) { div.innerHTML = `<div class="card"><p style="color:#666;">Nenhuma escala geral cadastrada.</p></div>`; return; }
-
-                const dataCulto = new Date(res.data); dataCulto.setMinutes(dataCulto.getMinutes() + dataCulto.getTimezoneOffset());
-                const diaCulto = dataCulto.getDate(); const mes = dataCulto.getMonth(); const ano = dataCulto.getFullYear();
-                const primeiroDia = new Date(ano, mes, 1).getDay(); const diasNoMes = new Date(ano, mes + 1, 0).getDate();
-                const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-                let htmlCalendario = `<div class="calendar-container"><div class="calendar-header">📅 Eventos Gerais - ${nomesMeses[mes]}</div><div class="calendar-grid"><div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div><div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>`;
-                for (let i = 0; i < primeiroDia; i++) htmlCalendario += `<div class="calendar-day empty"></div>`;
-                const hoje = new Date();
-                for (let dia = 1; dia <= diasNoMes; dia++) {
-                    const isHoje = (dia === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) ? 'today' : '';
-                    const isDiaCulto = (dia === diaCulto) ? 'scheduled' : ''; 
-                    htmlCalendario += `<div class="calendar-day ${isHoje} ${isDiaCulto}">${dia}</div>`;
-                }
-                htmlCalendario += `</div></div>`;
-                div.innerHTML = htmlCalendario;
-            }
-        }
-
-        // AGORA SIM, A NOVA FUNÇÃO FICA SEPARADA, DEPOIS DA ANTERIOR!
-        async function carregarTodasEscalas() {
-            const div = document.getElementById('conteudo-aba');
-            
-            // Pede os dados para o Google Sheets
-            const res = await fetchAPI({ acao: 'todasEscalas' });
-
-            // Se a planilha respondeu com sucesso
-            if (res && res.sucesso) {
-                if (res.escalas.length === 0) {
-                    div.innerHTML = `<div class="card"><p style="color:#00000;">Nenhuma escala futura encontrada.</p></div>`;
-                    return;
-                }
-
-               let html = '<h3 style="color:#000000; text-align:center; margin-bottom:20px;">Painel de Controle </h3>';
-                let dataAtual = '';
-
-                res.escalas.forEach(esc => {
-                    const dataStr = formatarData(esc.data);
-                    
-                    // Agrupa por Culto
-                    if (dataStr !== dataAtual) {
-                        if (dataAtual !== '') html += `</div>`; // fecha o cartao anterior
-                        html += `<div class="card" style="margin-bottom:20px; border-left: 5px solid #D97706;">
-                                 <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px; color:var(--text);">🗓️ Culto - ${dataStr}</h4>`;
-                        dataAtual = dataStr;
-                    }
-
-                    const statusIcon = (esc.status && esc.status.toUpperCase() === 'CONFIRMADO') ? '✅' : '⏳';
-                    html += `<p style="margin:8px 0; font-size:14px; border-bottom:1px dashed #eee; padding-bottom:5px;">
-                                <strong>${esc.funcao}:</strong> ${esc.nomeMembro} <span style="float:right;">${statusIcon}</span>
-                             </p>`;
-                });
-                
-                if (dataAtual !== '') html += `</div>`; // fecha o ultimo cartao
-                div.innerHTML = html;
-                
-            } else {
-                // SE DER ERRO, AGORA ELE AVISA NA TELA
-                div.innerHTML = `<div class="card">
-                    <h4 style="color:#EF4444; margin-top:0;">Ops! Erro ao carregar</h4>
-                    <p style="color:#666; font-size:14px;">${res ? res.erro : 'O Google Apps Script não reconheceu o comando. Lembre-se de fazer uma Nova Implantação no Sheets!'}</p>
-                </div>`;
-            }
-        }
-async function carregarRepertorio() {
-            const div = document.getElementById('conteudo-aba'); 
-            try {
-                const res = await fetchAPI({ acao: 'repertorio' });
-                
-                if (res && res.sucesso) {
-                    if (res.musicas.length === 0) { 
-                        div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum repertório futuro cadastrado na planilha.</p></div>`; 
-                        return; 
-                    }
-                    
-                    let html = '<h3 style="color:#000000; text-align:center; margin-bottom:20px;">Repertório dos Cultos 🎵</h3>'; 
-                    let dataAtual = '';
-                    
-                    res.musicas.forEach(musica => {
-                        const dataStr = formatarData(musica.data);
-                        
-                        if (dataStr !== dataAtual) { 
-                            if (dataAtual !== '') html += `</div>`;
-                            html += `<div class="card" style="margin-bottom:20px; border-left: 5px solid var(--success);">
-                                     <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px; color:#000000;">🗓️ Culto - ${dataStr}</h4>`; 
-                            dataAtual = dataStr; 
-                        }
-                        
-                        // Mágica para os links funcionarem com a COR BRANCA
-                        let cifraFormatada = '';
-                        if (musica.cifra) {
-                            cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
-                                if (url.includes('drive.google.com')) return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Abrir no Google Drive</a>';
-                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">🔗 Acessar Link da Cifra</a>';
-                            });
-                        }
-                        const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
-                        
-                        html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
-                                    <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
-                                    <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
-                                    ${cifraHtml}
-                                 </div>`;
-                    }); 
-                    if (dataAtual !== '') html += `</div>`; 
-                    div.innerHTML = html;
-                    
-                } else {
-                    div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro ao buscar: ${res ? res.erro : 'Servidor não respondeu.'}</p></div>`;
-                }
-            } catch (erro) {
-                div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro no aplicativo. Verifique se a função existe.</p></div>`;
-            }
-        }
-        }
-        function mostrarLoading(mostrar) { document.getElementById('loading').style.display = mostrar ? 'block' : 'none'; }
-    </script>
-</body>
-</html>
