@@ -350,40 +350,6 @@
         async function carregarProximaEscala() {
             const div = document.getElementById('conteudo-aba');
             const res = await fetchAPI({ acao: 'proximaEscala' });
-            async function carregarTodasEscalas() {
-            const div = document.getElementById('conteudo-aba');
-            const res = await fetchAPI({ acao: 'todasEscalas' });
-
-            if (res && res.sucesso) {
-                if (res.escalas.length === 0) {
-                    div.innerHTML = `<div class="card"><p style="color:#666;">Nenhuma escala futura encontrada.</p></div>`;
-                    return;
-                }
-
-                let html = '<h3 style="color:var(--primary); text-align:center; margin-bottom:20px;">Painel de Controle 👑</h3>';
-                let dataAtual = '';
-
-                res.escalas.forEach(esc => {
-                    const dataStr = formatarData(esc.data);
-                    
-                    // Se mudou o dia, cria um novo "Cartão" para esse Culto
-                    if (dataStr !== dataAtual) {
-                        if (dataAtual !== '') html += `</div>`; // fecha o cartao anterior
-                        html += `<div class="card" style="margin-bottom:20px; border-left: 5px solid #D97706;">
-                                 <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px; color:var(--text);">🗓️ Culto - ${dataStr}</h4>`;
-                        dataAtual = dataStr;
-                    }
-
-                    const statusIcon = (esc.status && esc.status.toUpperCase() === 'CONFIRMADO') ? '✅' : '⏳';
-                    html += `<p style="margin:8px 0; font-size:14px; border-bottom:1px dashed #eee; padding-bottom:5px;">
-                                <strong>${esc.funcao}:</strong> ${esc.nomeMembro} <span style="float:right;">${statusIcon}</span>
-                             </p>`;
-                });
-                
-                if (dataAtual !== '') html += `</div>`; // fecha o ultimo cartao
-                div.innerHTML = html;
-            }
-        }
 
             if (res && res.sucesso) {
                 if (!res.data) { div.innerHTML = `<div class="card"><p style="color:#666;">Nenhuma escala geral cadastrada.</p></div>`; return; }
@@ -406,24 +372,49 @@
             }
         }
 
-        async function carregarRepertorio() {
-            const div = document.getElementById('conteudo-aba'); const res = await fetchAPI({ acao: 'repertorio' });
+        // AGORA SIM, A NOVA FUNÇÃO FICA SEPARADA, DEPOIS DA ANTERIOR!
+        async function carregarTodasEscalas() {
+            const div = document.getElementById('conteudo-aba');
+            
+            // Pede os dados para o Google Sheets
+            const res = await fetchAPI({ acao: 'todasEscalas' });
+
+            // Se a planilha respondeu com sucesso
             if (res && res.sucesso) {
-                if (res.musicas.length === 0) { div.innerHTML = `<div class="card"><p style="color:#666;">Nenhum repertório cadastrado.</p></div>`; return; }
-                let html = ''; let dataAtual = '';
-                res.musicas.forEach(musica => {
-                    const dataStr = formatarData(musica.data);
-                    if (dataStr !== dataAtual) { html += `<h3 style="margin-top:20px; margin-bottom:10px; color:var(--primary);">Culto - ${dataStr}</h3>`; dataAtual = dataStr; }
-                    let cifraFormatada = '';
-                    if (musica.cifra) {
-                        cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
-                            if (url.includes('drive.google.com')) return '<br><a href="' + url + '" target="_blank" style="color: var(--primary); font-weight: bold; text-decoration: underline;">📄 Abrir no Google Drive</a>';
-                            return '<br><a href="' + url + '" target="_blank" style="color: var(--success); font-weight: bold; text-decoration: underline;">🔗 Acessar Link da Cifra</a>';
-                        });
+                if (res.escalas.length === 0) {
+                    div.innerHTML = `<div class="card"><p style="color:#666;">Nenhuma escala futura encontrada.</p></div>`;
+                    return;
+                }
+
+                let html = '<h3 style="color:var(--primary); text-align:center; margin-bottom:20px;">Painel de Controle 👑</h3>';
+                let dataAtual = '';
+
+                res.escalas.forEach(esc => {
+                    const dataStr = formatarData(esc.data);
+                    
+                    // Agrupa por Culto
+                    if (dataStr !== dataAtual) {
+                        if (dataAtual !== '') html += `</div>`; // fecha o cartao anterior
+                        html += `<div class="card" style="margin-bottom:20px; border-left: 5px solid #D97706;">
+                                 <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px; color:var(--text);">🗓️ Culto - ${dataStr}</h4>`;
+                        dataAtual = dataStr;
                     }
-                    const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
-                    html += `<div class="card" style="margin-bottom:12px;"><h4 style="margin:0 0 5px 0;">${musica.ordem || ''} - ${musica.musica}</h4><p style="margin:0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>${cifraHtml}</div>`;
-                }); div.innerHTML = html;
+
+                    const statusIcon = (esc.status && esc.status.toUpperCase() === 'CONFIRMADO') ? '✅' : '⏳';
+                    html += `<p style="margin:8px 0; font-size:14px; border-bottom:1px dashed #eee; padding-bottom:5px;">
+                                <strong>${esc.funcao}:</strong> ${esc.nomeMembro} <span style="float:right;">${statusIcon}</span>
+                             </p>`;
+                });
+                
+                if (dataAtual !== '') html += `</div>`; // fecha o ultimo cartao
+                div.innerHTML = html;
+                
+            } else {
+                // SE DER ERRO, AGORA ELE AVISA NA TELA
+                div.innerHTML = `<div class="card">
+                    <h4 style="color:#EF4444; margin-top:0;">Ops! Erro ao carregar</h4>
+                    <p style="color:#666; font-size:14px;">${res ? res.erro : 'O Google Apps Script não reconheceu o comando. Lembre-se de fazer uma Nova Implantação no Sheets!'}</p>
+                </div>`;
             }
         }
 
