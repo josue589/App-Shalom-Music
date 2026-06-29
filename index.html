@@ -473,7 +473,7 @@
             try {
                 const res = await fetchAPI({ acao: 'repertorio' });
                 if (res && res.sucesso) {
-                    if (res.musicas.length === 0) { div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum repertório futuro cadastrado.</p></div>`; return; }
+                    if (!res.musicas || res.musicas.length === 0) { div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum repertório futuro cadastrado.</p></div>`; return; }
                     
                     let html = '<h3 style="color:#000000; text-align:center; margin-bottom:20px;">Repertório dos Cultos 🎵</h3>'; 
                     let dataAtual = '';
@@ -490,7 +490,7 @@
                         let cifraFormatada = '';
                         if (musica.cifra) {
                             cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
-                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Abrir Cifra</a>';
+                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Abrir Cifra no Google Drive</a>';
                             });
                         }
                         const cifraHtml = cifraFormatada ? `<div class="cifra-box" style="margin-top: 10px; padding: 10px 15px;">${cifraFormatada}</div>` : '';
