@@ -214,9 +214,20 @@
         async function fazerLogin() {
             const codigo = document.getElementById('codigo').value;
             const msg = document.getElementById('msg-login');
+            const btn = document.querySelector('#tela-login button');
+
             if (!codigo) { msg.textContent = "Digite seu código!"; msg.style.display = "block"; return; }
             msg.style.display = "none";
+            
+            const textoOriginal = btn.textContent;
+            btn.textContent = "⏳ Entrando...";
+            btn.disabled = true;
+
             const resultado = await fetchAPI({ acao: 'login', codigo: codigo });
+            
+            btn.textContent = textoOriginal;
+            btn.disabled = false;
+
             if (resultado && resultado.sucesso) {
                 usuarioAtual = { nome: resultado.nome, funcao: resultado.funcao, foto: resultado.foto || null, codigoOriginal: codigo };
                 localStorage.setItem('louvor_user', JSON.stringify(usuarioAtual)); mostrarApp();
@@ -468,7 +479,7 @@
             }
         }
 
-       async function carregarRepertorio() {
+        async function carregarRepertorio() {
             const div = document.getElementById('conteudo-aba'); 
             try {
                 const res = await fetchAPI({ acao: 'repertorio' });
@@ -497,9 +508,8 @@
                         
                         let youtubeHtml = '';
                         if (musica.youtube) {
-                            // Removido o fundo vermelho para padronizar com a cor principal (Azul/Verde) e ajustado o tamanho!
                             youtubeHtml = `<div class="cifra-box" style="margin-top: 10px; padding: 10px 15px;">
-                                            <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">▶️ Assistir no YouTube</a>
+                                            <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: inline-block;">▶️ Assistir no YouTube</a>
                                            </div>`;
                         }
                         
@@ -515,7 +525,6 @@
                     
                 } else { div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro ao buscar: ${res ? res.erro : 'Servidor não respondeu.'}</p></div>`; }
             } catch (erro) { div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro no aplicativo. Verifique se a função existe.</p></div>`; }
-        }
         }
 
         function mostrarLoading(mostrar) { document.getElementById('loading').style.display = mostrar ? 'block' : 'none'; }
