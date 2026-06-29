@@ -365,31 +365,6 @@
             if (res && res.sucesso) { alert("Presença confirmada!"); carregarMinhasEscalas(); } else { alert("Erro ao confirmar."); }
         }
 
-        async function carregarProximaEscala() {
-            const div = document.getElementById('conteudo-aba');
-            const res = await fetchAPI({ acao: 'proximaEscala' });
-
-            if (res && res.sucesso) {
-                if (!res.data) { div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhuma escala geral cadastrada.</p></div>`; return; }
-
-                const dataCulto = new Date(res.data); dataCulto.setMinutes(dataCulto.getMinutes() + dataCulto.getTimezoneOffset());
-                const diaCulto = dataCulto.getDate(); const mes = dataCulto.getMonth(); const ano = dataCulto.getFullYear();
-                const primeiroDia = new Date(ano, mes, 1).getDay(); const diasNoMes = new Date(ano, mes + 1, 0).getDate();
-                const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-                let htmlCalendario = `<div class="calendar-container"><div class="calendar-header">📅 Agenda Geral - ${nomesMeses[mes]}</div><div class="calendar-grid"><div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div><div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>`;
-                for (let i = 0; i < primeiroDia; i++) htmlCalendario += `<div class="calendar-day empty"></div>`;
-                const hoje = new Date();
-                for (let dia = 1; dia <= diasNoMes; dia++) {
-                    const isHoje = (dia === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) ? 'today' : '';
-                    const isDiaCulto = (dia === diaCulto) ? 'scheduled' : ''; 
-                    htmlCalendario += `<div class="calendar-day ${isHoje} ${isDiaCulto}">${dia}</div>`;
-                }
-                htmlCalendario += `</div></div>`;
-                div.innerHTML = htmlCalendario;
-            }
-        }
-
         async function carregarTodasEscalas() {
             const div = document.getElementById('conteudo-aba');
             const res = await fetchAPI({ acao: 'todasEscalas' });
@@ -419,10 +394,10 @@
                 
             } else { div.innerHTML = `<div class="card"><h4 style="color:#EF4444; margin-top:0;">Ops! Erro ao carregar</h4><p style="color:#000000; font-size:14px;">${res ? res.erro : 'Erro no servidor.'}</p></div>`; }
         }
-async function carregarProximaEscala() {
+
+        async function carregarProximaEscala() {
             const div = document.getElementById('conteudo-aba');
             
-            // Agora buscamos a lista de TODAS as escalas futuras do banco de dados
             const res = await fetchAPI({ acao: 'todasEscalas' });
 
             if (res && res.sucesso) {
@@ -431,26 +406,22 @@ async function carregarProximaEscala() {
                     return; 
                 }
 
-                // 1. Mapear todas as datas únicas que têm culto
                 const datasUnicas = [];
-                const diasEscalados = []; // Formato D/M/AAAA para checar rapidamente depois
+                const diasEscalados = []; 
 
                 res.escalas.forEach(esc => {
                     const d = new Date(esc.data); 
                     d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
                     const dataStr = d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear();
 
-                    // Se a data ainda não foi guardada, nós a adicionamos
                     if (!diasEscalados.includes(dataStr)) {
                         diasEscalados.push(dataStr);
                         datasUnicas.push(d);
                     }
                 });
 
-                // Ordenar as datas (da mais próxima para a mais distante)
                 datasUnicas.sort((a, b) => a - b);
 
-                // 2. Descobrir quais meses possuem escalas
                 const mesesComCulto = []; 
                 datasUnicas.forEach(d => {
                     const mes = d.getMonth();
@@ -465,22 +436,18 @@ async function carregarProximaEscala() {
                 const hoje = new Date();
                 let htmlFinal = '';
 
-                // 3. Montar um bloco de Calendário para CADA mês encontrado
                 mesesComCulto.forEach(infoMes => {
                     const primeiroDia = new Date(infoMes.ano, infoMes.mes, 1).getDay();
                     const diasNoMes = new Date(infoMes.ano, infoMes.mes + 1, 0).getDate();
                     
-                    // Mostrar o ano no título apenas se for diferente do ano atual
                     const anoTitulo = infoMes.ano !== hoje.getFullYear() ? ` de ${infoMes.ano}` : '';
 
                     let htmlCalendario = `<div class="calendar-container"><div class="calendar-header">📅 Agenda Geral - ${nomesMeses[infoMes.mes]}${anoTitulo}</div><div class="calendar-grid"><div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div><div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div><div class="calendar-day-name">Sáb</div>`;
 
-                    // Espaços vazios até começar o dia 1
                     for (let i = 0; i < primeiroDia; i++) {
                         htmlCalendario += `<div class="calendar-day empty"></div>`;
                     }
 
-                    // Preencher os dias numéricos do mês
                     for (let dia = 1; dia <= diasNoMes; dia++) {
                         const dataCheck = dia + '/' + infoMes.mes + '/' + infoMes.ano;
                         
@@ -499,6 +466,8 @@ async function carregarProximaEscala() {
             } else { 
                 div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro ao carregar a agenda geral.</p></div>`; 
             }
+        }
+
         async function carregarRepertorio() {
             const div = document.getElementById('conteudo-aba'); 
             try {
@@ -518,20 +487,18 @@ async function carregarProximaEscala() {
                             dataAtual = dataStr; 
                         }
                         
-                        // Lógica do link da Cifra
                         let cifraFormatada = '';
                         if (musica.cifra) {
                             cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
-                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Abrir Cifra no Drive</a>';
+                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Abrir Cifra</a>';
                             });
                         }
-                        const cifraHtml = cifraFormatada ? `<div class="cifra-box" style="margin-top: 10px;">${cifraFormatada}</div>` : '';
+                        const cifraHtml = cifraFormatada ? `<div class="cifra-box" style="margin-top: 10px; padding: 10px 15px;">${cifraFormatada}</div>` : '';
                         
-                        // NOVO: Lógica do link do YouTube
                         let youtubeHtml = '';
                         if (musica.youtube) {
-                            youtubeHtml = `<div class="cifra-box" style="background: linear-gradient(135deg, #FF0000, #CC1818); margin-top: 8px; box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);">
-                                            <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">▶️ Assistir no YouTube</a>
+                            youtubeHtml = `<div class="cifra-box" style="background: linear-gradient(135deg, #EF4444, #B91C1C); margin-top: 8px; padding: 10px 15px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);">
+                                            <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: inline-block;">▶️ Assistir no YouTube</a>
                                            </div>`;
                         }
                         
