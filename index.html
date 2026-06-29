@@ -500,46 +500,6 @@ async function carregarProximaEscala() {
                 div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro ao carregar a agenda geral.</p></div>`; 
             }
         }
-        async function carregarRepertorio() {
-            const div = document.getElementById('conteudo-aba'); 
-            try {
-                const res = await fetchAPI({ acao: 'repertorio' });
-                if (res && res.sucesso) {
-                    if (res.musicas.length === 0) { div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum repertório futuro cadastrado.</p></div>`; return; }
-                    
-                    let html = '<h3 style="color:#000000; text-align:center; margin-bottom:20px;">Repertório dos Cultos 🎵</h3>'; 
-                    let dataAtual = '';
-                    
-                    res.musicas.forEach(musica => {
-                        const dataStr = formatarData(musica.data);
-                        if (dataStr !== dataAtual) { 
-                            if (dataAtual !== '') html += `</div>`;
-                            html += `<div class="card" style="margin-bottom:20px; border-left: 5px solid var(--success);">
-                                     <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px; color:#000000;">🗓️ Culto - ${dataStr}</h4>`; 
-                            dataAtual = dataStr; 
-                        }
-                        
-                        let cifraFormatada = '';
-                        if (musica.cifra) {
-                            cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) {
-                                if (url.includes('drive.google.com')) return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">📄 Cifra - ' + musica.musica + '</a>';
-                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: underline; display: inline-block;">🔗 Cifra - ' + musica.musica + '</a>';
-                            });
-                        }
-                        const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : '';
-                        
-                        html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
-                                    <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
-                                    <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
-                                    ${cifraHtml}
-                                 </div>`;
-                    }); 
-                    if (dataAtual !== '') html += `</div>`; 
-                    div.innerHTML = html;
-                    
-                } else { div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro ao buscar: ${res ? res.erro : 'Servidor não respondeu.'}</p></div>`; }
-            } catch (erro) { div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro no aplicativo. Verifique se a função existe.</p></div>`; }
-        }
 
         function mostrarLoading(mostrar) { document.getElementById('loading').style.display = mostrar ? 'block' : 'none'; }
     </script>
