@@ -241,25 +241,23 @@
             fecharConfiguracoes();
         }
 
-        function mostrarApp() {
+    function mostrarApp() {
             document.getElementById('tela-login').style.display = 'none'; 
             document.getElementById('tela-app').style.display = 'block';
             document.getElementById('user-nome').textContent = usuarioAtual.nome;
             document.getElementById('user-funcao').textContent = usuarioAtual.funcao; 
             
-           const f = usuarioAtual.funcao.toUpperCase();
-            
-            // Nova regra: Se tiver "ADMIN" em qualquer parte do nome da função, libera a aba
-            if (f.includes("ADMIN")) {
-                document.getElementById('tab-admin').style.display = 'block';
+            if (usuarioAtual.foto) {
+                document.getElementById('img-perfil').src = usuarioAtual.foto;
             } else {
-                document.getElementById('tab-admin').style.display = 'none';
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(usuarioAtual.nome)}&background=4655F6&color=fff&bold=true&rounded=true&size=120`;
+                document.getElementById('img-perfil').src = avatarUrl;
             }
 
             const f = usuarioAtual.funcao.toUpperCase();
             
-            // Nova regra: Apenas quem tem a função EXATA de "Administrador" vê a aba
-            if (f === "ADMINISTRADOR") {
+            // Nova regra: Se tiver "ADMIN" em qualquer parte do nome da função, libera a aba
+            if (f.includes("ADMIN")) {
                 document.getElementById('tab-admin').style.display = 'block';
             } else {
                 document.getElementById('tab-admin').style.display = 'none';
