@@ -47,10 +47,24 @@
         .header-app h3 { margin: 0 0 4px 0; color: var(--text); font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
         #user-funcao { background: linear-gradient(135deg, var(--primary), var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
 
-        @media (min-width: 800px) {
-            body::before { content: ''; position: fixed; top: 0; left: 0; bottom: 0; width: 60px; background: linear-gradient(to bottom, var(--primary), #2c38af); z-index: 100; box-shadow: 4px 0 20px rgba(70, 85, 246, 0.15); }
-            body::after { content: ''; position: fixed; top: 0; right: 0; bottom: 0; width: 60px; background: linear-gradient(to bottom, var(--success), #7cb522); z-index: 100; box-shadow: -4px 0 20px rgba(163, 230, 53, 0.15); }
-            html::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 50px; background: linear-gradient(to right, var(--primary), var(--success)); z-index: 101; }
+       /* Aplique isso ao elemento que contém toda a tela */
+.external-frame {
+  /* Define a largura da moldura */
+  border: 15px solid transparent; 
+  
+  /* Cria o gradiente contínuo */
+  border-image: linear-gradient(to right, #4655F6, #A3E635) 1;
+  
+  /* Garante que o conteúdo não fique sobre a borda */
+  box-sizing: border-box;
+}
+
+/* Se você estiver usando max-width para desktop, certifique-se de que a moldura se adapte */
+@media (min-width: 800px) {
+  .external-frame {
+    /* Ajuste para layouts maiores, se necessário */
+  }
+}
         }
 
         .card-login-novo { 
