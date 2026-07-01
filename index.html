@@ -420,17 +420,53 @@
         }
 
         // --- FORMULÁRIOS DE CADASTRO DIRETOS NO APP ---
-        function abrirFormEscala() {
+       function abrirFormEscala() {
             document.getElementById('conteudo-aba').innerHTML = `
                 <div class="card">
                     <h3 style="color:var(--primary); margin-top:0;">🗓️ Agendar Nova Escala</h3>
                     <label>Data do Culto:</label> <input type="date" id="cad-esc-data">
-                    <label>Função:</label> <input type="text" id="cad-esc-funcao" placeholder="Ex: Teclado, Vocal 1, Guitarra...">
-                    <label>Nome do Integrante (Exato como na Planilha):</label> <input type="text" id="cad-esc-nome" placeholder="Ex: Josue Silva">
+                    
+                    <label>Função:</label> 
+                    <select id="cad-esc-funcao">
+                        <option value="">Selecione uma função...</option>
+                        <option value="Ministro">Ministro</option>
+                        <option value="Vocal">Vocal</option>
+                        <option value="Violão">Violão</option>
+                        <option value="Guitarra">Guitarra</option>
+                        <option value="Teclado">Teclado</option>
+                        <option value="Baixo">Baixo</option>
+                        <option value="Bateria">Bateria</option>
+                        <option value="Mídia">Mídia</option>
+                        <option value="Som">Som</option>
+                    </select>
+
+                    <label>Nome do Integrante:</label> 
+                    <select id="cad-esc-nome">
+                        <option value="">Buscando integrantes...</option>
+                    </select>
+
                     <button onclick="salvarNovaEscala()" style="margin-top:15px;">💾 Salvar Escala</button>
                     <button onclick="mudarAba('admin')" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
                 </div>
             `;
+            
+            // Dispara a busca dos nomes no Google Sheets assim que a tela abre
+            preencherSelectMembros();
+        }
+
+        async function preencherSelectMembros() {
+            const selectNome = document.getElementById('cad-esc-nome');
+            const res = await fetchAPI({ acao: 'listarMembros' });
+
+            if (res && res.sucesso && res.membros) {
+                selectNome.innerHTML = '<option value="">Selecione o integrante...</option>';
+                // Ordena os nomes em ordem alfabética
+                res.membros.sort().forEach(membro => {
+                    selectNome.innerHTML += `<option value="${membro}">${membro}</option>`;
+                });
+            } else {
+                selectNome.innerHTML = '<option value="">Erro ao carregar nomes</option>';
+            }
         }
         async function salvarNovaEscala() {
             const data = document.getElementById('cad-esc-data').value;
