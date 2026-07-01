@@ -116,31 +116,24 @@
         .calendar-day.scheduled { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(70, 85, 246, 0.3); border: none; }
         
         label { font-weight: 600; font-size: 14px; color: var(--text-light); margin-left: 5px; display: block; margin-top: 15px; }
-/* ANTES (Como estava na imagem errada, image_2.png) */
+/* Estado limpo e seguro do Card de Login */
 .card-login {
-    /* ... (provavelmente um background claro ou transparente que causava o erro) ... */
-    padding: 20px;
-    border-radius: 15px;
-    /* ... outras propriedades ... */
-}
-
-/* DEPOIS (O ajuste correto) */
-.card-login {
-    /* REMOVE O FUNDO ANTERIOR */
-    background: none;
-    padding: 20px;
+    /* Fundo escuro e levemente transparente para a pegada moderna/minimalista */
+    background-color: rgba(32, 33, 36, 0.85); 
+    padding: 30px 20px;
     border-radius: 15px;
     
-    /* NOVA TÉCNICA DE BORDA COM GRADIENTE */
-    border: 4px solid transparent; /* Cria o espaço da borda */
-    background-image: linear-gradient(#202124, #202124), /* Fundo interno escuro (sólido) */
-                      linear-gradient(135deg, #4285F4 0%, #34A853 100%); /* O gradiente da borda */
-    background-origin: border-box;
-    background-clip: content-box, border-box; /* O truque: corta o fundo interno e a borda */
+    /* Garantindo que não há nenhuma borda de gradiente ativa */
+    border: none; 
+    background-image: none;
     
-    /* Centralização e Sombra (Mantenha ou adicione) */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    /* ... outras propriedades de tamanho e posição ... */
+    /* Sombra suave para destacar o card do fundo embaçado */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    
+    /* Outras propriedades de alinhamento que você já possuía (ex: text-align, width, etc) */
+    text-align: center;
+    width: 90%;
+    max-width: 400px; /* Mantendo o mobile-first, mas expansível para desktop */
 }
         /* Ajustes dos textos para combinar com o fundo escuro */
         #tela-login .card h2 { color: #FFFFFF !important; }
