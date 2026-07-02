@@ -25,12 +25,19 @@
             padding: 0; 
             -webkit-font-smoothing: antialiased; 
             min-height: 100vh; 
-            
-            /* --- NOVA BORDA GRADIENTE DA TELA --- */
-            box-sizing: border-box; /* Garante que a borda caiba na tela perfeitamente */
-            border: 50px solid transparent; /* Define a espessura de 8px (pode alterar se quiser mais grossa) */
+         /* --- NOVA BORDA GRADIENTE DA TELA --- */
+            box-sizing: border-box; 
+            border: 4px solid transparent; /* Reduzido de 50px para 4px. Use 0px se quiser remover a moldura por completo */
             border-image: linear-gradient(to right, var(--primary), var(--success)) 1;
         }
+
+        /* Ajuste específico para garantir que a moldura suma ou fique fina no celular */
+        @media (max-width: 768px) {
+            body {
+                border-width: 0px; /* 0px remove a moldura no celular para ganhar espaço */
+            }
+        }
+        
         .container { padding: 20px; max-width: 600px; margin: 0 auto; margin-top: 8vh; }
         
         #tela-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
@@ -45,27 +52,7 @@
         .profile-pic img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .user-info { flex-grow: 1; text-align: center; padding: 0 10px; }
         .header-app h3 { margin: 0 0 4px 0; color: var(--text); font-weight: 700; font-size: 20px; letter-spacing: -0.5px; }
-        #user-funcao { background: linear-gradient(135deg, var(--primary), var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
-
-       /* Aplique isso ao elemento que contém toda a tela */
-.external-frame {
-  /* Define a largura da moldura */
-  border: 15px solid transparent; 
-  
-  /* Cria o gradiente contínuo */
-  border-image: linear-gradient(to right, #4655F6, #A3E635) 1;
-  
-  /* Garante que o conteúdo não fique sobre a borda */
-  box-sizing: border-box;
-}
-
-/* Se você estiver usando max-width para desktop, certifique-se de que a moldura se adapte */
-@media (min-width: 800px) {
-  .external-frame {
-    /* Ajuste para layouts maiores, se necessário */
-  }
-}
-        }
+        #user-funcao { background: linear-gradient(135deg, var(--primary), var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }   
 
         .card-login-novo { 
             background-color: #1a1a1a !important; /* Fundo escuro */
