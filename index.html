@@ -331,10 +331,17 @@
             font-family: 'Poppins', sans-serif; 
             white-space: pre-wrap; 
             font-size: 15px; 
-            margin-top: 15px; 
+            margin-top: 10px; 
             overflow-x: auto; 
             border: none; 
             box-shadow: 0 4px 15px rgba(70, 85, 246, 0.2); 
+            text-align: center; 
+            box-sizing: border-box; 
+            width: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 55px;
         }
         
         #loading { 
@@ -573,14 +580,13 @@
                     </div>
                 </div>
 
-                <!-- NOVO: Modal de Editar Escala -->
+                <!-- Modal de Editar Escala -->
                 <div id="modal-editar-escala" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--primary);">
                         <h3 style="color:var(--primary); margin-top:0;">Editar Escala</h3>
                         <p id="infoEscalaEdit" style="font-size:14px; font-weight: 600; color:var(--text); margin-bottom: 20px;"></p>
                         
                         <label>Novo Membro Escalado:</label>
-                        <!-- Campo com Datalist para buscar nomes -->
                         <input list="lista-membros-edit" id="inputNovoMembro" placeholder="Buscando integrantes..." autocomplete="off">
                         <datalist id="lista-membros-edit"></datalist>
                         
@@ -589,7 +595,7 @@
                     </div>
                 </div>
 
-                <!-- NOVO: Modal de Editar Repertório -->
+                <!-- Modal de Editar Repertório -->
                 <div id="modal-editar-repertorio" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--success); max-height: 90vh; overflow-y: auto;">
                         <h3 id="tituloMusicaEdit" style="color:var(--primary); margin-top:0;">Editando Música</h3>
@@ -1349,16 +1355,16 @@
                         let cifraFormatada = ''; 
                         if (musica.cifra) { 
                             cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) { 
-                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: inline-block;">📄 Cifra - ' + musica.musica + '</a>'; 
+                                return '<a href="' + url + '" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">📄 Cifra - ' + musica.musica + '</a>'; 
                             }); 
                         } 
                         
-                        const cifraHtml = cifraFormatada ? `<div class="cifra-box" style="margin-top: 10px; padding: 10px 15px;">${cifraFormatada}</div>` : ''; 
+                        const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : ''; 
                         
                         let youtubeHtml = ''; 
                         if (musica.youtube) { 
-                            youtubeHtml = `<div class="cifra-box" style="margin-top: 10px; padding: 10px 15px;">
-                                <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 300; text-decoration: none; display: inline-block;">▶️ Assistir no YouTube</a>
+                            youtubeHtml = `<div class="cifra-box">
+                                <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">▶️ Assistir no YouTube</a>
                             </div>`; 
                         } 
                         
@@ -1447,7 +1453,8 @@
         function abrirEditarRepertorio(musica, ordemAtual, cifraAtual, youtubeAtual) {
             repMusicaAtual = musica;
             
-            document.getElementById("tituloMusicaEdit").innerText = musica;
+            document.getElementById("tituloMusicaEdit").innerText = "Editando: " + musica;
+            document.getElementById("inputNovoNomeMusica").value = musica;
             document.getElementById("inputNovaOrdem").value = ordemAtual;
             document.getElementById("inputNovaCifra").value = cifraAtual;
             document.getElementById("inputNovoYoutube").value = youtubeAtual;
@@ -1456,9 +1463,15 @@
         }
 
         async function salvarEdicaoRepertorio() {
+            const novoNomeMusica = document.getElementById("inputNovoNomeMusica").value.trim();
             const novaOrdem = document.getElementById("inputNovaOrdem").value;
             const novaCifra = document.getElementById("inputNovaCifra").value;
             const novoYoutube = document.getElementById("inputNovoYoutube").value;
+
+            if(!novoNomeMusica) {
+                mostrarNotificacao("O nome da música não pode ficar vazio.", "error");
+                return;
+            }
 
             const btn = document.getElementById("btn-salvar-edicao-rep");
             const textoOriginal = btn.innerText;
@@ -1468,6 +1481,7 @@
             const res = await postAPI(getScriptUrl(), {
                 acao: "editarRepertorio",
                 nomeMusica: repMusicaAtual,
+                novoNomeMusica: novoNomeMusica,
                 novaOrdem: novaOrdem,
                 novoLinkCifra: novaCifra,
                 novoLinkYoutube: novoYoutube
@@ -1490,7 +1504,6 @@
             document.getElementById("modal-editar-repertorio").style.display = "none";
         }
 
-        // Exibir ou ocultar tela de loading
         function mostrarLoading(mostrar) { 
             document.getElementById('loading').style.display = mostrar ? 'block' : 'none'; 
         }
