@@ -554,6 +554,7 @@
 
             <!-- Conteúdo Principal e Abas -->
             <div id="area-conteudo-principal">
+                
                 <!-- Modal de Declínio -->
                 <div id="modal-declinio" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid #B91C1C;">
@@ -569,6 +570,39 @@
                         
                         <button onclick="confirmarDeclinioModal()" style="margin-top:20px; background: linear-gradient(135deg, #EF4444, #B91C1C); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">Confirmar Troca</button>
                         <button onclick="fecharModalDeclinio()" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar e Voltar</button>
+                    </div>
+                </div>
+
+                <!-- NOVO: Modal de Editar Escala -->
+                <div id="modal-editar-escala" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
+                    <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--primary);">
+                        <h3 style="color:var(--primary); margin-top:0;">Editar Escala</h3>
+                        <p id="infoEscalaEdit" style="font-size:14px; font-weight: 600; color:var(--text); margin-bottom: 20px;"></p>
+                        
+                        <label>Novo Membro Escalado:</label>
+                        <input type="text" id="inputNovoMembro" placeholder="Digite o nome do integrante">
+                        
+                        <button id="btn-salvar-edicao-escala" onclick="salvarEdicaoEscala()" style="margin-top:10px;">💾 Salvar Alteração</button>
+                        <button onclick="fecharModais()" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
+                    </div>
+                </div>
+
+                <!-- NOVO: Modal de Editar Repertório -->
+                <div id="modal-editar-repertorio" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
+                    <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--success); max-height: 90vh; overflow-y: auto;">
+                        <h3 id="tituloMusicaEdit" style="color:var(--primary); margin-top:0;">Nome da Música</h3>
+                        
+                        <label>Ordem no Culto:</label>
+                        <input type="number" id="inputNovaOrdem" placeholder="Ex: 1">
+                        
+                        <label>Link da Cifra (Drive):</label>
+                        <input type="url" id="inputNovaCifra" placeholder="Cole o link aqui">
+                        
+                        <label>Link do YouTube:</label>
+                        <input type="url" id="inputNovoYoutube" placeholder="Cole o link aqui">
+                        
+                        <button id="btn-salvar-edicao-rep" onclick="salvarEdicaoRepertorio()" style="margin-top:10px;">💾 Salvar Música</button>
+                        <button onclick="fecharModais()" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
                     </div>
                 </div>
 
@@ -596,6 +630,9 @@
         
         let usuarioAtual = null;
         let novaFotoBase64 = null;
+
+        // Variáveis globais para Edição
+        let escDataAtual, escFuncaoAtual, repMusicaAtual;
 
         // Função de notificações visuais (Toasts)
         function mostrarNotificacao(mensagem, tipo = 'success') {
@@ -1043,6 +1080,9 @@
                 let dataAtual = ''; 
                 let temEscalaAtiva = false; 
                 
+                // Variável para verificar se é admin
+                const isAdmin = usuarioAtual.funcao.toUpperCase().includes("ADMIN");
+
                 res.escalas.forEach(esc => { 
                     if (esc.status && esc.status.toUpperCase().includes('DECLINADO')) { return; } 
                     temEscalaAtiva = true; 
@@ -1056,8 +1096,12 @@
                     } 
                     
                     const statusIcon = (esc.status && esc.status.toUpperCase().includes('CONFIRMADO')) ? '✅' : '⏳'; 
+                    
+                    // Adicionando botão de Editar caso seja Admin
+                    const btnEditar = isAdmin ? `<button onclick="abrirEditarEscala('${esc.data}', '${esc.funcao}', '${esc.nomeMembro}')" style="background:none; border:none; color:var(--primary); font-size:12px; cursor:pointer; padding:0; margin-left:10px; width: auto; box-shadow: none;">✏️ Editar</button>` : '';
+
                     html += `<p style="margin:8px 0; font-size:14px; border-bottom:1px dashed #eee; padding-bottom:5px; color:#000000;">
-                        <strong>${esc.funcao}:</strong> ${esc.nomeMembro} <span style="float:right;">${statusIcon}</span>
+                        <strong>${esc.funcao}:</strong> ${esc.nomeMembro} ${btnEditar} <span style="float:right;">${statusIcon}</span>
                     </p>`; 
                 }); 
                 
@@ -1288,6 +1332,9 @@
                     let html = '<h3 style="color:#ffffff; text-align:center; margin-bottom:20px;">Repertório dos Cultos 🎵</h3>'; 
                     let dataAtual = ''; 
                     
+                    // Checagem de admin para mostrar botão de editar
+                    const isAdmin = usuarioAtual.funcao.toUpperCase().includes("ADMIN");
+
                     res.musicas.forEach(musica => { 
                         const dataStr = formatarData(musica.data); 
                         if (dataStr !== dataAtual) { 
@@ -1313,9 +1360,13 @@
                             </div>`; 
                         } 
                         
+                        // Botão de Editar Música (só aparece para Admin)
+                        const btnEditarRep = isAdmin ? `<button onclick="abrirEditarRepertorio('${musica.musica}', '${musica.ordem || ''}', '${musica.cifra || ''}', '${musica.youtube || ''}')" style="background:none; border:none; color:var(--primary); font-size:13px; cursor:pointer; padding:0; margin-top:8px; width:auto; box-shadow:none; text-align: left;">✏️ Editar Música</button>` : '';
+
                         html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
                             <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
                             <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
+                            ${btnEditarRep}
                             ${youtubeHtml}${cifraHtml}
                         </div>`; 
                     }); 
@@ -1328,6 +1379,96 @@
             } catch (erro) { 
                 div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro no aplicativo. Verifique se a função existe.</p></div>`; 
             } 
+        }
+
+        // ==========================================
+        // NOVAS FUNÇÕES: EDIÇÃO (ESCALA E REPERTÓRIO)
+        // ==========================================
+
+        function abrirEditarEscala(data, funcao, membroAtual) {
+            escDataAtual = data;
+            escFuncaoAtual = funcao;
+            
+            document.getElementById("infoEscalaEdit").innerText = formatarData(data) + " - " + funcao;
+            document.getElementById("inputNovoMembro").value = membroAtual;
+            document.getElementById("modal-editar-escala").style.display = "flex";
+        }
+
+        async function salvarEdicaoEscala() {
+            const novoMembro = document.getElementById("inputNovoMembro").value.trim();
+            if(!novoMembro){
+                mostrarNotificacao("O nome do membro não pode ficar vazio.", "error");
+                return;
+            }
+
+            const btn = document.getElementById("btn-salvar-edicao-escala");
+            btn.innerText = "⏳ Salvando...";
+            btn.disabled = true;
+
+            const res = await postAPI(getScriptUrl(), {
+                acao: "editarEscala",
+                dataEscala: escDataAtual,
+                funcao: escFuncaoAtual,
+                novoMembro: novoMembro
+            });
+
+            btn.innerText = "💾 Salvar Alteração";
+            btn.disabled = false;
+
+            // Compatibilidade com possíveis respostas do Apps Script
+            if (res && (res.sucesso || res.status === "sucesso")) {
+                mostrarNotificacao("Escala atualizada com sucesso!", "success");
+                fecharModais();
+                carregarTodasEscalas(); // Recarrega a tela na mesma hora
+            } else {
+                mostrarNotificacao("Erro ao atualizar a escala.", "error");
+            }
+        }
+
+        function abrirEditarRepertorio(musica, ordemAtual, cifraAtual, youtubeAtual) {
+            repMusicaAtual = musica;
+            
+            document.getElementById("tituloMusicaEdit").innerText = musica;
+            document.getElementById("inputNovaOrdem").value = ordemAtual;
+            document.getElementById("inputNovaCifra").value = cifraAtual;
+            document.getElementById("inputNovoYoutube").value = youtubeAtual;
+            
+            document.getElementById("modal-editar-repertorio").style.display = "flex";
+        }
+
+        async function salvarEdicaoRepertorio() {
+            const novaOrdem = document.getElementById("inputNovaOrdem").value;
+            const novaCifra = document.getElementById("inputNovaCifra").value;
+            const novoYoutube = document.getElementById("inputNovoYoutube").value;
+
+            const btn = document.getElementById("btn-salvar-edicao-rep");
+            btn.innerText = "⏳ Salvando...";
+            btn.disabled = true;
+
+            const res = await postAPI(getScriptUrl(), {
+                acao: "editarRepertorio",
+                nomeMusica: repMusicaAtual,
+                novaOrdem: novaOrdem,
+                novoLinkCifra: novaCifra,
+                novoLinkYoutube: novoYoutube
+            });
+
+            btn.innerText = "💾 Salvar Música";
+            btn.disabled = false;
+
+            if (res && (res.sucesso || res.status === "sucesso")) {
+                mostrarNotificacao("Repertório atualizado com sucesso!", "success");
+                fecharModais();
+                carregarRepertorio(); // Recarrega a tela na mesma hora
+            } else {
+                mostrarNotificacao("Erro ao atualizar o repertório.", "error");
+            }
+        }
+
+        function fecharModais() {
+            document.getElementById("modal-editar-escala").style.display = "none";
+            document.getElementById("modal-editar-repertorio").style.display = "none";
+            // O modal de declínio já possui sua própria função de fechar, mas pode ser adicionado aqui se quiser centralizar
         }
 
         // Exibir ou ocultar tela de loading
