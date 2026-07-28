@@ -1387,43 +1387,32 @@
         // NOVAS FUNÇÕES: EDIÇÃO (ESCALA E REPERTÓRIO)
         // ==========================================
 
-        function abrirEditarEscala(data, funcao, membroAtual) {
+      async function abrirEditarEscala(data, funcao, membroAtual) {
             escDataAtual = data;
             escFuncaoAtual = funcao;
             
             document.getElementById("infoEscalaEdit").innerText = formatarData(data) + " - " + funcao;
             document.getElementById("inputNovoMembro").value = membroAtual;
             document.getElementById("modal-editar-escala").style.display = "flex";
-        }
 
-        async function salvarEdicaoEscala() {
-            const novoMembro = document.getElementById("inputNovoMembro").value.trim();
-            if(!novoMembro){
-                mostrarNotificacao("O nome do membro não pode ficar vazio.", "error");
-                return;
-            }
+            // Busca os integrantes para preencher a lista
+            const inputNome = document.getElementById('inputNovoMembro');
+            const dataList = document.getElementById('lista-membros-edit');
 
-            const btn = document.getElementById("btn-salvar-edicao-escala");
-            btn.innerText = "⏳ Salvando...";
-            btn.disabled = true;
-
-            const res = await postAPI(getScriptUrl(), {
-                acao: "editarEscala",
-                dataEscala: escDataAtual,
-                funcao: escFuncaoAtual,
-                novoMembro: novoMembro
-            });
-
-            btn.innerText = "💾 Salvar Alteração";
-            btn.disabled = false;
-
-            // Compatibilidade com possíveis respostas do Apps Script
-            if (res && (res.sucesso || res.status === "sucesso")) {
-                mostrarNotificacao("Escala atualizada com sucesso!", "success");
-                fecharModais();
-                carregarTodasEscalas(); // Recarrega a tela na mesma hora
-            } else {
-                mostrarNotificacao("Erro ao atualizar a escala.", "error");
+            // Só busca se a lista ainda estiver vazia para economizar dados
+            if (dataList.innerHTML === '') {
+                inputNome.placeholder = "Buscando integrantes...";
+                const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
+                
+                if (res && res.sucesso && res.membros) {
+                    inputNome.placeholder = "Clique ou digite para pesquisar...";
+                    dataList.innerHTML = '';
+                    res.membros.sort().forEach(membro => {
+                        dataList.innerHTML += `<option value="${membro}">`;
+                    });
+                } else {
+                    inputNome.placeholder = "Erro ao carregar nomes";
+                }
             }
         }
 
