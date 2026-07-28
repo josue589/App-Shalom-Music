@@ -601,7 +601,8 @@
                         <h3 id="tituloMusicaEdit" style="color:var(--primary); margin-top:0;">Editando Música</h3>
                         
                         <label>Nome da Música:</label>
-                        <input type="text" id="inputNovoNomeMusica" placeholder="Ex: Teu amor não falha">
+                        <!-- O comando oninput abaixo esvazia a cifra antiga automaticamente se o nome for alterado -->
+                        <input type="text" id="inputNovoNomeMusica" placeholder="Ex: Teu amor não falha" oninput="document.getElementById('inputNovaCifra').value = '';">
                         
                         <label>Ordem no Culto:</label>
                         <input type="number" id="inputNovaOrdem" placeholder="Ex: 1">
