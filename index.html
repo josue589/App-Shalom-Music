@@ -573,14 +573,16 @@
                     </div>
                 </div>
 
-                <!-- NOVO: Modal de Editar Escala -->
+               <!-- NOVO: Modal de Editar Escala -->
                 <div id="modal-editar-escala" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--primary);">
                         <h3 style="color:var(--primary); margin-top:0;">Editar Escala</h3>
                         <p id="infoEscalaEdit" style="font-size:14px; font-weight: 600; color:var(--text); margin-bottom: 20px;"></p>
                         
                         <label>Novo Membro Escalado:</label>
-                        <input type="text" id="inputNovoMembro" placeholder="Digite o nome do integrante">
+                        <!-- Campo alterado para uma lista pesquisável -->
+                        <input list="lista-membros-edit" id="inputNovoMembro" placeholder="Buscando integrantes..." autocomplete="off">
+                        <datalist id="lista-membros-edit"></datalist>
                         
                         <button id="btn-salvar-edicao-escala" onclick="salvarEdicaoEscala()" style="margin-top:10px;">💾 Salvar Alteração</button>
                         <button onclick="fecharModais()" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
