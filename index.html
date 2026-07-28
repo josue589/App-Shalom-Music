@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Shalom Music - Gestão de Ministérios</title>
+    <title>Louve - Gestão de Ministérios</title>
     <link rel="icon" type="image/png" href="Logo grande.png">
     <link rel="apple-touch-icon" href="Logo grande.png">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        
         :root {
             --primary: #4655F6; 
             --success: #A3E635; 
@@ -503,8 +502,8 @@
         <!-- Tela de Login -->
         <div id="tela-login">
             <div class="card-login-novo">
-                <img src="Logo grande.png?v=3" alt="Shalom Music" style="width: 125px; height: 110px; border-radius: 20px; margin-bottom: 15px; object-fit: cover;">
-                <h2 style="margin-top:0; color: #fff; font-weight: 700; font-size: 32px; margin-bottom: 5px;">Shalom Music</h2>
+                <img src="Logo grande.png?v=3" alt="Louve" style="width: 125px; height: 110px; border-radius: 20px; margin-bottom: 15px; object-fit: cover;">
+                <h2 style="margin-top:0; color: #fff; font-weight: 700; font-size: 32px; margin-bottom: 5px;">Louve</h2>
                 <p style="color: #cfd8dc; font-size: 14px; margin-bottom: 25px;">Gestão de Excelência para o Ministério</p>
                 
                 <input type="email" id="email" class="input-login-novo" placeholder="Seu E-mail" onkeypress="if(event.key === 'Enter') document.getElementById('senha').focus()">
@@ -574,14 +573,14 @@
                     </div>
                 </div>
 
-               <!-- NOVO: Modal de Editar Escala -->
+                <!-- NOVO: Modal de Editar Escala -->
                 <div id="modal-editar-escala" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--primary);">
                         <h3 style="color:var(--primary); margin-top:0;">Editar Escala</h3>
                         <p id="infoEscalaEdit" style="font-size:14px; font-weight: 600; color:var(--text); margin-bottom: 20px;"></p>
                         
                         <label>Novo Membro Escalado:</label>
-                        <!-- Campo alterado para uma lista pesquisável -->
+                        <!-- Campo com Datalist para buscar nomes -->
                         <input list="lista-membros-edit" id="inputNovoMembro" placeholder="Buscando integrantes..." autocomplete="off">
                         <datalist id="lista-membros-edit"></datalist>
                         
@@ -1083,7 +1082,6 @@
                 let dataAtual = ''; 
                 let temEscalaAtiva = false; 
                 
-                // Variável para verificar se é admin
                 const isAdmin = usuarioAtual.funcao.toUpperCase().includes("ADMIN");
 
                 res.escalas.forEach(esc => { 
@@ -1100,7 +1098,6 @@
                     
                     const statusIcon = (esc.status && esc.status.toUpperCase().includes('CONFIRMADO')) ? '✅' : '⏳'; 
                     
-                    // Adicionando botão de Editar caso seja Admin
                     const btnEditar = isAdmin ? `<button onclick="abrirEditarEscala('${esc.data}', '${esc.funcao}', '${esc.nomeMembro}')" style="background:none; border:none; color:var(--primary); font-size:12px; cursor:pointer; padding:0; margin-left:10px; width: auto; box-shadow: none;">✏️ Editar</button>` : '';
 
                     html += `<p style="margin:8px 0; font-size:14px; border-bottom:1px dashed #eee; padding-bottom:5px; color:#000000;">
@@ -1335,7 +1332,6 @@
                     let html = '<h3 style="color:#ffffff; text-align:center; margin-bottom:20px;">Repertório dos Cultos 🎵</h3>'; 
                     let dataAtual = ''; 
                     
-                    // Checagem de admin para mostrar botão de editar
                     const isAdmin = usuarioAtual.funcao.toUpperCase().includes("ADMIN");
 
                     res.musicas.forEach(musica => { 
@@ -1363,7 +1359,6 @@
                             </div>`; 
                         } 
                         
-                        // Botão de Editar Música (só aparece para Admin)
                         const btnEditarRep = isAdmin ? `<button onclick="abrirEditarRepertorio('${musica.musica}', '${musica.ordem || ''}', '${musica.cifra || ''}', '${musica.youtube || ''}')" style="background:none; border:none; color:var(--primary); font-size:13px; cursor:pointer; padding:0; margin-top:8px; width:auto; box-shadow:none; text-align: left;">✏️ Editar Música</button>` : '';
 
                         html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
@@ -1385,10 +1380,10 @@
         }
 
         // ==========================================
-        // NOVAS FUNÇÕES: EDIÇÃO (ESCALA E REPERTÓRIO)
+        // EDIÇÃO (ESCALA E REPERTÓRIO)
         // ==========================================
 
-      async function abrirEditarEscala(data, funcao, membroAtual) {
+        async function abrirEditarEscala(data, funcao, membroAtual) {
             escDataAtual = data;
             escFuncaoAtual = funcao;
             
@@ -1396,11 +1391,9 @@
             document.getElementById("inputNovoMembro").value = membroAtual;
             document.getElementById("modal-editar-escala").style.display = "flex";
 
-            // Busca os integrantes para preencher a lista
             const inputNome = document.getElementById('inputNovoMembro');
             const dataList = document.getElementById('lista-membros-edit');
 
-            // Só busca se a lista ainda estiver vazia para economizar dados
             if (dataList.innerHTML === '') {
                 inputNome.placeholder = "Buscando integrantes...";
                 const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
@@ -1415,6 +1408,39 @@
                     inputNome.placeholder = "Erro ao carregar nomes";
                 }
             }
+        }
+
+        async function salvarEdicaoEscala() {
+            const novoMembro = document.getElementById("inputNovoMembro").value.trim();
+            if(!novoMembro){
+                mostrarNotificacao("O nome do membro não pode ficar vazio.", "error");
+                return;
+            }
+
+            const btn = document.getElementById("btn-salvar-edicao-escala");
+            const textoOriginal = btn.innerText;
+            btn.innerText = "⏳ Salvando...";
+            btn.disabled = true;
+
+            const res = await postAPI(getScriptUrl(), {
+                acao: "editarEscala",
+                dataEscala: escDataAtual,
+                funcao: escFuncaoAtual,
+                novoMembro: novoMembro
+            });
+
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+
+            if (res && (res.sucesso || res.status === "sucesso")) {
+                mostrarNotificacao("Escala atualizada com sucesso!", "success");
+                fecharModais();
+                carregarTodasEscalas(); 
+            } else {
+                mostrarNotificacao("Erro ao atualizar a escala.", "error");
+            }
+        }
+
         function abrirEditarRepertorio(musica, ordemAtual, cifraAtual, youtubeAtual) {
             repMusicaAtual = musica;
             
@@ -1432,6 +1458,7 @@
             const novoYoutube = document.getElementById("inputNovoYoutube").value;
 
             const btn = document.getElementById("btn-salvar-edicao-rep");
+            const textoOriginal = btn.innerText;
             btn.innerText = "⏳ Salvando...";
             btn.disabled = true;
 
@@ -1443,13 +1470,13 @@
                 novoLinkYoutube: novoYoutube
             });
 
-            btn.innerText = "💾 Salvar Música";
+            btn.innerText = textoOriginal;
             btn.disabled = false;
 
             if (res && (res.sucesso || res.status === "sucesso")) {
                 mostrarNotificacao("Repertório atualizado com sucesso!", "success");
                 fecharModais();
-                carregarRepertorio(); // Recarrega a tela na mesma hora
+                carregarRepertorio(); 
             } else {
                 mostrarNotificacao("Erro ao atualizar o repertório.", "error");
             }
@@ -1458,7 +1485,6 @@
         function fecharModais() {
             document.getElementById("modal-editar-escala").style.display = "none";
             document.getElementById("modal-editar-repertorio").style.display = "none";
-            // O modal de declínio já possui sua própria função de fechar, mas pode ser adicionado aqui se quiser centralizar
         }
 
         // Exibir ou ocultar tela de loading
