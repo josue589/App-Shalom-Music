@@ -508,53 +508,6 @@
             margin-bottom: 20px;
             padding-right: 5px;
         }
-        /* --- ESTILOS DO MENU SUSPENSO DA BANDA --- */
-        .botao-ver-banda {
-            background: transparent;
-            border: none;
-            color: var(--primary);
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 10px 0;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            justify-content: center;
-            transition: 0.3s;
-        }
-
-        .botao-ver-banda:hover {
-            color: var(--success);
-        }
-
-        .conteudo-banda-dropdown {
-            display: none;
-            margin-top: 10px;
-            border-top: 1px solid #E5E7EB;
-            padding-top: 10px;
-        }
-
-        .conteudo-banda-dropdown.mostrar {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .item-membro-banda {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            border-bottom: 1px dashed #ccc;
-            color: var(--text);
-        }
-
-        .item-membro-banda:last-child {
-            border-bottom: none;
-        }
     </style>
 </head>
 <body>
@@ -976,7 +929,13 @@
             if (aba === 'admin') carregarTodasEscalas(); 
         }
 
-       async function carregarMinhasEscalas() { 
+        function formatarData(dataIso) { 
+            if(!dataIso) return ""; 
+            const d = new Date(dataIso); 
+            d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); 
+            return d.toLocaleDateString('pt-BR'); 
+        }
+        async function carregarMinhasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
             const res = await fetchAPI(getScriptUrl(), { acao: 'minhasEscalas', nome: usuarioAtual.nome }); 
             
@@ -1002,25 +961,19 @@
                             </div>`; 
                         } 
                         
-                        // Botão de Ver Banda e o Container (Menu Suspenso)
-                        const areaBandaHTML = `
-                            <button class="botao-ver-banda" onclick="toggleBandaEscalada(this, '${esc.data}')">Ver Banda ▼</button>
-                            <div class="conteudo-banda-dropdown"></div>
-                        `;
-
                         htmlLista += `<div class="card item-escala">
                             <h3 style="margin:0 0 8px 0; color:#000000;">🗓️ ${dataFormatada}</h3>
                             <p style="margin:0; color:#000000;"><strong>Função:</strong> ${esc.funcao}</p>
                             <p style="margin:0; margin-top: 8px;">${statusHTML}</p>
-                            ${areaBandaHTML}
                             ${botoesHTML}
                         </div>`; 
                     }); 
                 } 
-                div.innerHTML = htmlLista; 
+                div.innerHTML = htmlLista; // Agora desenha apenas a lista, sem o calendário
             } 
         }
   
+
         async function confirmar(dataIso, funcaoDaEscala) { 
             const res = await postAPI(getScriptUrl(), { acao: 'confirmarPresenca', nome: usuarioAtual.nome, dataCulto: dataIso, funcao: funcaoDaEscala }); 
             if (res && res.sucesso) { 
@@ -1548,57 +1501,6 @@
 
         function mostrarLoading(mostrar) { 
             document.getElementById('loading').style.display = mostrar ? 'block' : 'none'; 
-        }
-        // ==========================================
-        // LÓGICA: MOSTRAR/OCULTAR BANDA NA ESCALA
-        // ==========================================
-        async function toggleBandaEscalada(botao, dataIso) {
-            const conteudo = botao.nextElementSibling;
-            
-            // Se já estiver aberto, apenas fecha.
-            if (conteudo.classList.contains('mostrar')) {
-                conteudo.classList.remove('mostrar');
-                botao.innerHTML = 'Ver Banda ▼';
-                return;
-            }
-
-            // Abre o menu e indica carregamento
-            conteudo.classList.add('mostrar');
-            botao.innerHTML = 'Ocultar Banda ▲';
-
-            // Se ainda não buscou os dados dessa div, busca agora
-            if (conteudo.innerHTML.trim() === '') {
-                conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando integrantes...</div>';
-                
-                // Aproveitamos a mesma rota que o painel Admin usa
-                const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' });
-                
-                if (res && res.sucesso) {
-                    // Filtra apenas os membros que estão na mesma data que o card e que não declinaram
-                    const bandaDoDia = res.escalas.filter(esc => {
-                        const isValid = (!esc.status || !esc.status.toUpperCase().includes('DECLINADO'));
-                        return esc.data === dataIso && isValid;
-                    });
-
-                    if (bandaDoDia.length === 0) {
-                        conteudo.innerHTML = '<div class="item-membro-banda">Ninguém escalado além de você.</div>';
-                        return;
-                    }
-
-                    let htmlBanda = '';
-                    bandaDoDia.forEach(membro => {
-                        const statusIcon = (membro.status && membro.status.toUpperCase().includes('CONFIRMADO')) ? '✅' : '⏳';
-                        htmlBanda += `<div class="item-membro-banda">
-                                        <span><b>${membro.funcao}:</b> ${membro.nomeMembro}</span>
-                                        <span>${statusIcon}</span>
-                                      </div>`;
-                    });
-                    
-                    conteudo.innerHTML = htmlBanda;
-                } else {
-                    conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444;">Erro ao carregar a banda.</div>';
-                }
-            }
         }
     </script>
 </body>
