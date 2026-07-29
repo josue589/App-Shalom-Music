@@ -935,45 +935,11 @@
             d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); 
             return d.toLocaleDateString('pt-BR'); 
         }
-        
         async function carregarMinhasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
             const res = await fetchAPI(getScriptUrl(), { acao: 'minhasEscalas', nome: usuarioAtual.nome }); 
             
             if (res && res.sucesso) { 
-                const diasEscalados = res.escalas.filter(esc => !(esc.status && esc.status.toUpperCase().includes('DECLINADO'))).map(esc => { 
-                    const d = new Date(esc.data); 
-                    d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); 
-                    return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(); 
-                }); 
-                
-                const hoje = new Date(); 
-                const mes = hoje.getMonth(); 
-                const ano = hoje.getFullYear(); 
-                const primeiroDia = new Date(ano, mes, 1).getDay(); 
-                const diasNoMes = new Date(ano, mes + 1, 0).getDate(); 
-                const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]; 
-                
-                let htmlCalendario = `<div class="calendar-container">
-                    <div class="calendar-header">📅 ${nomesMeses[mes]} ${ano}</div>
-                    <div class="calendar-grid">
-                        <div class="calendar-day-name">Dom</div><div class="calendar-day-name">Seg</div><div class="calendar-day-name">Ter</div>
-                        <div class="calendar-day-name">Qua</div><div class="calendar-day-name">Qui</div><div class="calendar-day-name">Sex</div>
-                        <div class="calendar-day-name">Sáb</div>`; 
-                        
-                for (let i = 0; i < primeiroDia; i++) {
-                    htmlCalendario += `<div class="calendar-day empty"></div>`; 
-                }
-                
-                for (let dia = 1; dia <= diasNoMes; dia++) { 
-                    const dataCheck = dia + '/' + mes + '/' + ano; 
-                    const isEscalado = diasEscalados.includes(dataCheck); 
-                    const isHoje = (dia === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) ? 'today' : ''; 
-                    const classEscalado = isEscalado ? 'scheduled' : ''; 
-                    htmlCalendario += `<div class="calendar-day ${isHoje} ${classEscalado}">${dia}</div>`; 
-                } 
-                htmlCalendario += `</div></div>`; 
-                
                 let htmlLista = ''; 
                 if (res.escalas.length === 0) { 
                     htmlLista = `<div class="card"><p style="color:#000000;">Você não possui escalas futuras lançadas no sistema.</p></div>`; 
@@ -1003,9 +969,10 @@
                         </div>`; 
                     }); 
                 } 
-                div.innerHTML = htmlCalendario + htmlLista; 
+                div.innerHTML = htmlLista; // Agora desenha apenas a lista, sem o calendário
             } 
         }
+  
 
         async function confirmar(dataIso, funcaoDaEscala) { 
             const res = await postAPI(getScriptUrl(), { acao: 'confirmarPresenca', nome: usuarioAtual.nome, dataCulto: dataIso, funcao: funcaoDaEscala }); 
