@@ -556,11 +556,33 @@
         .item-membro-banda:last-child {
             border-bottom: none;
         }
+        /* --- ESTILOS DE NOTIFICAÇÃO --- */
+        .badge-notificacao {
+            background-color: #EF4444;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 6px;
+            vertical-align: middle;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+            animation: pulsar-notificacao 1.5s infinite;
+        }
+
+        @keyframes pulsar-notificacao {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
+   <div id="toast-container"></div>
+    <!-- NOVO: Áudio de Notificação -->
+    <audio id="som-notificacao" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
     <div class="container">
         
         <!-- Tela de Login -->
@@ -675,9 +697,11 @@
                     </div>
                 </div>
 
-                <!-- Menu de Abas -->
+               <!-- Menu de Abas -->
                 <div class="nav-tabs">
-                    <div class="nav-tab active" onclick="mudarAba('minhas')">Minhas Escalas</div>
+                    <div class="nav-tab active" onclick="mudarAba('minhas')">
+                        Minhas Escalas <span id="dot-notificacao" class="badge-notificacao" style="display:none;"></span>
+                    </div>
                     <div class="nav-tab" onclick="mudarAba('geral')">Todas as Escalas</div>
                     <div class="nav-tab" onclick="mudarAba('repertorio')">Repertório</div>
                     <div class="nav-tab" id="tab-admin" onclick="mudarAba('admin')" style="display:none; font-weight:800;">Visão Geral</div>
@@ -984,12 +1008,14 @@
             return d.toLocaleDateString('pt-BR'); 
         }
 
-        async function carregarMinhasEscalas() { 
+       async function carregarMinhasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
             const res = await fetchAPI(getScriptUrl(), { acao: 'minhasEscalas', nome: usuarioAtual.nome }); 
             
             if (res && res.sucesso) { 
                 let htmlLista = ''; 
+                let qtdePendentes = 0; // NOVO: Contador de escalas pendentes
+
                 if (res.escalas.length === 0) { 
                     htmlLista = `<div class="card"><p style="color:#000000;">Você não possui escalas futuras lançadas no sistema.</p></div>`; 
                 } else { 
@@ -1003,6 +1029,8 @@
                         } else if (esc.status && esc.status.toUpperCase().includes('DECLINADO')) { 
                             statusHTML = `<span class="status-pendente" style="color: #991B1B; background: #FEE2E2; border-color: #FECACA;">❌ Escala Declinada</span>`; 
                         } else { 
+                            // Se não está confirmado nem declinado, está pendente!
+                            qtdePendentes++; 
                             statusHTML = `<span class="status-pendente">⏳ Aguardando Confirmação</span>`; 
                             botoesHTML = `<div class="botoes-escala">
                                 <button class="btn-success" style="margin-top: 0;" onclick="confirmar('${esc.data}', '${esc.funcao}')">Confirmar Presença</button>
@@ -1010,7 +1038,6 @@
                             </div>`; 
                         } 
                         
-                        // Botão de Ver Banda e o Container (Menu Suspenso)
                         const areaBandaHTML = `
                             <button class="botao-ver-banda" onclick="toggleBandaEscalada(this, '${esc.data}')">Ver Banda ▼</button>
                             <div class="conteudo-banda-dropdown"></div>
@@ -1026,7 +1053,34 @@
                     }); 
                 } 
                 div.innerHTML = htmlLista; 
+
+                // NOVO: Lógica de Notificação
+                const dot = document.getElementById('dot-notificacao');
+                const pendentesSalvos = parseInt(localStorage.getItem('louvor_pendentes_' + usuarioAtual.nome) || '0');
+
+                // Mantém a bolinha vermelha se houver alguma pendência, esconde se for 0
+                if (dot) {
+                    dot.style.display = qtdePendentes > 0 ? 'inline-block' : 'none';
+                }
+
+                // Toca o som APENAS se a quantidade de pendentes for maior do que a última vez que ele viu
+                if (qtdePendentes > pendentesSalvos) {
+                    tocarSomNotificacao();
+                    mostrarNotificacao("Você tem novas escalas aguardando confirmação!", "success");
+                }
+
+                // Salva a quantidade atual no celular da pessoa para comparar na próxima vez
+                localStorage.setItem('louvor_pendentes_' + usuarioAtual.nome, qtdePendentes);
             } 
+        }
+
+        // NOVO: Função para disparar o som (colocada logo após a função acima)
+        function tocarSomNotificacao() {
+            const audio = document.getElementById('som-notificacao');
+            if(audio) {
+                // O .catch evita erros caso o navegador bloqueie o som por proteção automática
+                audio.play().catch(e => console.log("Áudio bloqueado até interação do usuário."));
+            }
         }
 
         async function confirmar(dataIso, funcaoDaEscala) { 
