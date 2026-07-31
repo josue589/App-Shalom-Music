@@ -574,6 +574,72 @@
             50% { transform: scale(1.4); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
         }
+        /* --- ESTILOS DO MODO BLACK (ESCURO) --- */
+        body.dark-mode {
+            --bg: #121212;
+            --text: #F9FAFB;
+            --text-light: #9CA3AF;
+            --card-bg: #1A1A24; /* Fundo escuro levemente puxado pro roxo/azul */
+            
+            /* Novo gradiente baseado na logo: Verde-água/Teal escuro para Roxo escuro */
+            border-image: linear-gradient(to right, #0F766E, #2D0B5A) 1;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .header-app,
+        body.dark-mode .calendar-container {
+            background: var(--card-bg);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+            border: 1px solid #2D3748;
+        }
+        
+        body.dark-mode input, 
+        body.dark-mode select {
+            background: #2D3748;
+            color: #F9FAFB;
+            border-color: #4A5568;
+        }
+        
+        body.dark-mode .calendar-day {
+            background: #2D3748;
+            color: #F9FAFB;
+        }
+        
+        body.dark-mode .calendar-day.empty {
+            background: transparent;
+        }
+
+        body.dark-mode .nav-tab {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        body.dark-mode .nav-tab.active {
+            background: #2D3748;
+            color: #38BDF8; /* Azul claro para dar contraste */
+        }
+        
+        /* Forçando a cor do texto para sobrescrever estilos em linha */
+        body.dark-mode .card h3, 
+        body.dark-mode .card h4, 
+        body.dark-mode .card p:not(.status-confirmado):not(.status-pendente),
+        body.dark-mode .item-membro-banda,
+        body.dark-mode label {
+            color: var(--text) !important;
+        }
+
+        body.dark-mode .btn-admin-panel {
+            background: #2D3748;
+            color: #F9FAFB;
+            border-color: #4A5568;
+        }
+
+        body.dark-mode .conteudo-banda-dropdown {
+            border-top-color: #4A5568;
+        }
+
+        body.dark-mode .item-membro-banda {
+            border-bottom-color: #4A5568;
+        }
     </style>
 </head>
 <body>
@@ -606,10 +672,12 @@
                 <div class="profile-pic" onclick="abrirConfiguracoes()" style="cursor: pointer; transition: transform 0.2s;" title="Editar Perfil">
                     <img id="img-perfil" src="" alt="Foto de Perfil">
                 </div>
-                <div class="user-info">
+               <div class="user-info">
                     <h3 id="user-nome">Nome</h3>
                     <small id="user-funcao">Função</small>
                 </div>
+                <!-- Botão de alternar tema Claro/Escuro -->
+                <button id="btn-theme-toggle" onclick="toggleDarkMode()" style="background: transparent; border: none; font-size: 22px; box-shadow: none; padding: 0 15px; width: auto; cursor: pointer;">🌙</button>
                 <button class="btn-logout" onclick="fazerLogout()">Sair</button>
             </div>
 
@@ -1663,6 +1731,36 @@
                 }
             }
         }
+        // ==========================================
+        // LÓGICA DO MODO BLACK (DARK MODE)
+        // ==========================================
+        function toggleDarkMode() {
+            const body = document.body;
+            const btn = document.getElementById('btn-theme-toggle');
+            
+            // Alterna a classe dark-mode no body
+            body.classList.toggle('dark-mode');
+            
+            // Verifica se ficou escuro ou claro e salva no celular do usuário
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('shalom_theme', 'dark');
+                btn.innerText = '☀️';
+            } else {
+                localStorage.setItem('shalom_theme', 'light');
+                btn.innerText = '🌙';
+            }
+        }
+
+        // Aplica o tema salvo imediatamente quando o app é aberto
+        window.addEventListener('DOMContentLoaded', () => {
+            const temaSalvo = localStorage.getItem('shalom_theme');
+            const btn = document.getElementById('btn-theme-toggle');
+            
+            if (temaSalvo === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (btn) btn.innerText = '☀️';
+            }
+        });
     </script>
 </body>
 </html>
