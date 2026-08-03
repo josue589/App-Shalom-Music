@@ -556,6 +556,7 @@
         .item-membro-banda:last-child {
             border-bottom: none;
         }
+
         /* --- ESTILOS DE NOTIFICAÇÃO --- */
         .badge-notificacao {
             background-color: #EF4444;
@@ -574,81 +575,16 @@
             50% { transform: scale(1.4); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
         }
-        /* --- ESTILOS DO MODO BLACK (ESCURO) --- */
-        body.dark-mode {
-            --bg: #121212;
-            --text: #F9FAFB;
-            --text-light: #9CA3AF;
-            --card-bg: #1A1A24; /* Fundo escuro levemente puxado pro roxo/azul */
-            
-            /* Novo gradiente baseado na logo: Verde-água/Teal escuro para Roxo escuro */
-            border-image: linear-gradient(to right, #0F766E, #2D0B5A) 1;
-        }
-
-        body.dark-mode .card,
-        body.dark-mode .header-app,
-        body.dark-mode .calendar-container {
-            background: var(--card-bg);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
-            border: 1px solid #2D3748;
-        }
-        
-        body.dark-mode input, 
-        body.dark-mode select {
-            background: #2D3748;
-            color: #F9FAFB;
-            border-color: #4A5568;
-        }
-        
-        body.dark-mode .calendar-day {
-            background: #2D3748;
-            color: #F9FAFB;
-        }
-        
-        body.dark-mode .calendar-day.empty {
-            background: transparent;
-        }
-
-        body.dark-mode .nav-tab {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        body.dark-mode .nav-tab.active {
-            background: #2D3748;
-            color: #38BDF8; /* Azul claro para dar contraste */
-        }
-        
-        /* Forçando a cor do texto para sobrescrever estilos em linha */
-        body.dark-mode .card h3, 
-        body.dark-mode .card h4, 
-        body.dark-mode .card p:not(.status-confirmado):not(.status-pendente),
-        body.dark-mode .item-membro-banda,
-        body.dark-mode label {
-            color: var(--text) !important;
-        }
-
-        body.dark-mode .btn-admin-panel {
-            background: #2D3748;
-            color: #F9FAFB;
-            border-color: #4A5568;
-        }
-
-        body.dark-mode .conteudo-banda-dropdown {
-            border-top-color: #4A5568;
-        }
-
-        body.dark-mode .item-membro-banda {
-            border-bottom-color: #4A5568;
-        }
     </style>
 </head>
 <body>
 
-   <div id="toast-container"></div>
+    <div id="toast-container"></div>
     <!-- NOVO: Áudio de Notificação -->
     <audio id="som-notificacao" preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2866/2866-preview.mp3" type="audio/mpeg">
     </audio>
+
     <div class="container">
         
         <!-- Tela de Login -->
@@ -672,12 +608,10 @@
                 <div class="profile-pic" onclick="abrirConfiguracoes()" style="cursor: pointer; transition: transform 0.2s;" title="Editar Perfil">
                     <img id="img-perfil" src="" alt="Foto de Perfil">
                 </div>
-               <div class="user-info">
+                <div class="user-info">
                     <h3 id="user-nome">Nome</h3>
                     <small id="user-funcao">Função</small>
                 </div>
-                <!-- Botão de alternar tema Claro/Escuro -->
-                <button id="btn-theme-toggle" onclick="toggleDarkMode()" style="background: transparent; border: none; font-size: 22px; box-shadow: none; padding: 0 15px; width: auto; cursor: pointer;">🌙</button>
                 <button class="btn-logout" onclick="fazerLogout()">Sair</button>
             </div>
 
@@ -727,7 +661,7 @@
                     </div>
                 </div>
 
-                <!-- NOVO: Modal de Editar Escala em Massa (Por Dia) -->
+                <!-- Modal de Editar Escala em Massa (Por Dia) -->
                 <div id="modal-editar-escala-dia" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--primary); max-height: 90vh;">
                         <h3 style="color:var(--primary); margin-top:0;">Editar Equipe do Dia</h3>
@@ -765,7 +699,7 @@
                     </div>
                 </div>
 
-               <!-- Menu de Abas -->
+                <!-- Menu de Abas -->
                 <div class="nav-tabs">
                     <div class="nav-tab active" onclick="mudarAba('minhas')">
                         Minhas Escalas <span id="dot-notificacao" class="badge-notificacao" style="display:none;"></span>
@@ -1076,13 +1010,13 @@
             return d.toLocaleDateString('pt-BR'); 
         }
 
-       async function carregarMinhasEscalas() { 
+        async function carregarMinhasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
             const res = await fetchAPI(getScriptUrl(), { acao: 'minhasEscalas', nome: usuarioAtual.nome }); 
             
             if (res && res.sucesso) { 
                 let htmlLista = ''; 
-                let qtdePendentes = 0; // NOVO: Contador de escalas pendentes
+                let qtdePendentes = 0; 
 
                 if (res.escalas.length === 0) { 
                     htmlLista = `<div class="card"><p style="color:#000000;">Você não possui escalas futuras lançadas no sistema.</p></div>`; 
@@ -1097,7 +1031,6 @@
                         } else if (esc.status && esc.status.toUpperCase().includes('DECLINADO')) { 
                             statusHTML = `<span class="status-pendente" style="color: #991B1B; background: #FEE2E2; border-color: #FECACA;">❌ Escala Declinada</span>`; 
                         } else { 
-                            // Se não está confirmado nem declinado, está pendente!
                             qtdePendentes++; 
                             statusHTML = `<span class="status-pendente">⏳ Aguardando Confirmação</span>`; 
                             botoesHTML = `<div class="botoes-escala">
@@ -1122,31 +1055,25 @@
                 } 
                 div.innerHTML = htmlLista; 
 
-                // NOVO: Lógica de Notificação
                 const dot = document.getElementById('dot-notificacao');
                 const pendentesSalvos = parseInt(localStorage.getItem('louvor_pendentes_' + usuarioAtual.nome) || '0');
 
-                // Mantém a bolinha vermelha se houver alguma pendência, esconde se for 0
                 if (dot) {
                     dot.style.display = qtdePendentes > 0 ? 'inline-block' : 'none';
                 }
 
-                // Toca o som APENAS se a quantidade de pendentes for maior do que a última vez que ele viu
                 if (qtdePendentes > pendentesSalvos) {
                     tocarSomNotificacao();
                     mostrarNotificacao("Você tem novas escalas aguardando confirmação!", "success");
                 }
 
-                // Salva a quantidade atual no celular da pessoa para comparar na próxima vez
                 localStorage.setItem('louvor_pendentes_' + usuarioAtual.nome, qtdePendentes);
             } 
         }
 
-        // NOVO: Função para disparar o som (colocada logo após a função acima)
         function tocarSomNotificacao() {
             const audio = document.getElementById('som-notificacao');
             if(audio) {
-                // O .catch evita erros caso o navegador bloqueie o som por proteção automática
                 audio.play().catch(e => console.log("Áudio bloqueado até interação do usuário."));
             }
         }
@@ -1224,7 +1151,7 @@
             const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' }); 
             
             if (res && res.sucesso) { 
-                escalasGeraisGlobais = res.escalas; // Salva a lista na variável global para o botão de edição
+                escalasGeraisGlobais = res.escalas; 
 
                 let htmlAdminBox = `<div class="card" style="margin-bottom:20px; text-align:center;">
                     <h4 style="margin-top:0; margin-bottom:10px; color: var(--primary);"> Painel de Gerenciamento</h4>
@@ -1252,7 +1179,6 @@
                     if (dataStr !== dataAtual) { 
                         if (dataAtual !== '') html += `</div>`; 
 
-                        // Adiciona o NOVO Botão de Editar Escala no cabeçalho do Dia
                         const btnEditarDia = isAdmin ? `<button onclick="abrirEditarEscalaDia('${dataStr}', '${esc.data}')" style="background:var(--bg); border:1px solid #ccc; color:var(--text); font-size:12px; cursor:pointer; padding:4px 8px; margin-left:10px; border-radius: 6px; width: auto; box-shadow: none;">✏️ Editar Equipe</button>` : '';
 
                         html += `<div class="card" style="margin-bottom:20px; border-left: 5px solid #D97706;">
@@ -1307,7 +1233,7 @@
             const inputNome = document.getElementById(inputId); 
             const dataList = document.getElementById(dataListId); 
 
-            if (dataList.innerHTML !== '') return; // Evita buscar de novo se já tem os dados
+            if (dataList.innerHTML !== '') return; 
 
             inputNome.placeholder = "Buscando integrantes..."; 
             const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' }); 
@@ -1555,18 +1481,15 @@
             
             document.getElementById("infoEscalaDiaEdit").innerText = "Editando a equipe do dia " + dataStrFormatada;
             const containerInputs = document.getElementById("container-edicao-escalas");
-            containerInputs.innerHTML = ""; // Limpa a lista antes de preencher
+            containerInputs.innerHTML = ""; 
 
-            // Chama a função para buscar os nomes para a lista suspensa, se necessário
             await preencherSelectMembros('lista-membros-edit', 'infoEscalaDiaEdit'); 
 
-            // Filtra as escalas ativas que correspondem a essa data
             const escalasDoDia = escalasGeraisGlobais.filter(esc => {
                 const isValid = (!esc.status || !esc.status.toUpperCase().includes('DECLINADO'));
                 return formatarData(esc.data) === dataStrFormatada && isValid;
             });
 
-            // Monta os campos de input dinamicamente
             escalasDoDia.forEach((esc, index) => {
                 containerInputs.innerHTML += `
                     <label style="margin-top: 15px; font-size:12px; color: var(--primary);">${esc.funcao}:</label>
@@ -1686,26 +1609,21 @@
         async function toggleBandaEscalada(botao, dataIso) {
             const conteudo = botao.nextElementSibling;
             
-            // Se já estiver aberto, apenas fecha.
             if (conteudo.classList.contains('mostrar')) {
                 conteudo.classList.remove('mostrar');
                 botao.innerHTML = 'Ver Banda ▼';
                 return;
             }
 
-            // Abre o menu e indica carregamento
             conteudo.classList.add('mostrar');
             botao.innerHTML = 'Ocultar Banda ▲';
 
-            // Se ainda não buscou os dados dessa div, busca agora
             if (conteudo.innerHTML.trim() === '') {
                 conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando integrantes...</div>';
                 
-                // Aproveitamos a mesma rota que o painel Admin usa
                 const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' });
                 
                 if (res && res.sucesso) {
-                    // Filtra apenas os membros que estão na mesma data que o card e que não declinaram
                     const bandaDoDia = res.escalas.filter(esc => {
                         const isValid = (!esc.status || !esc.status.toUpperCase().includes('DECLINADO'));
                         return esc.data === dataIso && isValid;
@@ -1731,36 +1649,6 @@
                 }
             }
         }
-        // ==========================================
-        // LÓGICA DO MODO BLACK (DARK MODE)
-        // ==========================================
-        function toggleDarkMode() {
-            const body = document.body;
-            const btn = document.getElementById('btn-theme-toggle');
-            
-            // Alterna a classe dark-mode no body
-            body.classList.toggle('dark-mode');
-            
-            // Verifica se ficou escuro ou claro e salva no celular do usuário
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('shalom_theme', 'dark');
-                btn.innerText = '☀️';
-            } else {
-                localStorage.setItem('shalom_theme', 'light');
-                btn.innerText = '🌙';
-            }
-        }
-
-        // Aplica o tema salvo imediatamente quando o app é aberto
-        window.addEventListener('DOMContentLoaded', () => {
-            const temaSalvo = localStorage.getItem('shalom_theme');
-            const btn = document.getElementById('btn-theme-toggle');
-            
-            if (temaSalvo === 'dark') {
-                document.body.classList.add('dark-mode');
-                if (btn) btn.innerText = '☀️';
-            }
-        });
     </script>
 </body>
 </html>
