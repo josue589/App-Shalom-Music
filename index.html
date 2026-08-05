@@ -1468,17 +1468,16 @@
                                     Ouvir no Spotify
                                 </a>
                             </div>`; 
-                        } 
                         }
                         
                         const btnEditarRep = isAdmin ? `<button onclick="abrirEditarRepertorio('${musica.musica}', '${musica.ordem || ''}', '${musica.cifra || ''}', '${musica.youtube || ''}', '${musica.spotify || ''}')" style="background:none; border:none; color:var(--primary); font-size:13px; cursor:pointer; padding:0; margin-top:8px; width:auto; box-shadow:none; text-align: left;">✏️ Editar Música</button>` : '';
 
-                       html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
+                        html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
                             <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
                             <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
                             ${btnEditarRep}
                             ${youtubeHtml}${spotifyHtml}${cifraHtml}
-                        </div>`;
+                        </div>`; 
                     }); 
                     
                     if (dataAtual !== '') html += `</div>`; 
