@@ -694,6 +694,9 @@
                         <label>Link do YouTube:</label>
                         <input type="url" id="inputNovoYoutube" placeholder="Cole o link aqui">
                         
+                        <label>Link do Spotify:</label>
+                        <input type="url" id="inputNovoSpotify" placeholder="Cole o link do Spotify aqui">
+                        
                         <button id="btn-salvar-edicao-rep" onclick="salvarEdicaoRepertorio()" style="margin-top:10px;">💾 Salvar Música</button>
                         <button onclick="fecharModais()" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
                     </div>
@@ -1277,6 +1280,7 @@
                 <label>Tom da Música:</label> <input type="text" id="cad-rep-tom" placeholder="Ex: E">
                 <label>Link da Cifra (Google Drive):</label> <input type="url" id="cad-rep-cifra" placeholder="https://drive.google.com/...">
                 <label>Link do YouTube:</label> <input type="url" id="cad-rep-youtube" placeholder="https://youtube.com/...">
+                <label>Link do Spotify:</label> <input type="url" id="cad-rep-spotify" placeholder="https://open.spotify.com/...">
                 <button onclick="salvarNovoRepertorio()" style="margin-top:15px;">💾 Salvar Música</button>
                 <button onclick="mudarAba('admin')" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
             </div>`; 
@@ -1289,13 +1293,14 @@
             const tom = document.getElementById('cad-rep-tom').value.trim(); 
             const cifra = document.getElementById('cad-rep-cifra').value.trim(); 
             const youtube = document.getElementById('cad-rep-youtube').value.trim(); 
+            const spotify = document.getElementById('cad-rep-spotify').value.trim(); 
             
             if(!data || !nome) { 
                 mostrarNotificacao("Data e Nome da música são obrigatórios!", "error"); 
                 return; 
             } 
             
-            const res = await postAPI(getScriptUrl(), { acao: 'cadastrarRepertorio', data: data, ordem: ordem, musica: nome, tom: tom, cifra: cifra, youtube: youtube }); 
+            const res = await postAPI(getScriptUrl(), { acao: 'cadastrarRepertorio', data: data, ordem: ordem, musica: nome, tom: tom, cifra: cifra, youtube: youtube, spotify: spotify });
             if(res && res.sucesso) { 
                 mostrarNotificacao("Música adicionada ao repertório!", "success"); 
                 mudarAba('admin'); 
@@ -1452,14 +1457,22 @@
                                 <a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">▶️ Assistir no YouTube</a>
                             </div>`; 
                         } 
+
+                        let spotifyHtml = ''; 
+                        if (musica.spotify) { 
+                            spotifyHtml = `<div class="cifra-box" style="background: linear-gradient(135deg, #1DB954, #1ed760);">
+                                <a href="${musica.spotify}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">🎧 Ouvir no Spotify</a>
+                            </div>`; 
+                        }
                         
-                        const btnEditarRep = isAdmin ? `<button onclick="abrirEditarRepertorio('${musica.musica}', '${musica.ordem || ''}', '${musica.cifra || ''}', '${musica.youtube || ''}')" style="background:none; border:none; color:var(--primary); font-size:13px; cursor:pointer; padding:0; margin-top:8px; width:auto; box-shadow:none; text-align: left;">✏️ Editar Música</button>` : '';
+                        const btnEditarRep = isAdmin ? `<button onclick="abrirEditarRepertorio('${musica.musica}', '${musica.ordem || ''}', '${musica.cifra || ''}', '${musica.youtube || ''}', '${musica.spotify || ''}')" style="background:none; border:none; color:var(--primary); font-size:13px; cursor:pointer; padding:0; margin-top:8px; width:auto; box-shadow:none; text-align: left;">✏️ Editar Música</button>` : '';
 
                         html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
                             <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
                             <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
                             ${btnEditarRep}
-                            ${youtubeHtml}${cifraHtml}
+                            ${youtubeHtml}${spotifyHtml}${cifraHtml}
+                        </div>`;
                         </div>`; 
                     }); 
                     
@@ -1545,7 +1558,7 @@
         // ==========================================
         // EDIÇÃO DE REPERTÓRIO
         // ==========================================
-        function abrirEditarRepertorio(musica, ordemAtual, cifraAtual, youtubeAtual) {
+        function abrirEditarRepertorio(musica, ordemAtual, cifraAtual, youtubeAtual, spotifyAtual) {
             repMusicaAtual = musica;
             
             document.getElementById("tituloMusicaEdit").innerText = "Editando: " + musica;
@@ -1553,6 +1566,7 @@
             document.getElementById("inputNovaOrdem").value = ordemAtual;
             document.getElementById("inputNovaCifra").value = cifraAtual;
             document.getElementById("inputNovoYoutube").value = youtubeAtual;
+            document.getElementById("inputNovoSpotify").value = spotifyAtual || "";
             
             document.getElementById("modal-editar-repertorio").style.display = "flex";
         }
@@ -1562,6 +1576,7 @@
             const novaOrdem = document.getElementById("inputNovaOrdem").value;
             const novaCifra = document.getElementById("inputNovaCifra").value;
             const novoYoutube = document.getElementById("inputNovoYoutube").value;
+            const novoSpotify = document.getElementById("inputNovoSpotify").value;
 
             if(!novoNomeMusica) {
                 mostrarNotificacao("O nome da música não pode ficar vazio.", "error");
@@ -1579,7 +1594,8 @@
                 novoNomeMusica: novoNomeMusica,
                 novaOrdem: novaOrdem,
                 novoLinkCifra: novaCifra,
-                novoLinkYoutube: novoYoutube
+                novoLinkYoutube: novoYoutube,
+                novoLinkSpotify: novoSpotify
             });
 
             btn.innerText = textoOriginal;
