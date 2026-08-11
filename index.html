@@ -1817,6 +1817,54 @@
                 }
             }
         }
+        // ==========================================
+        // LÓGICA: MOSTRAR/OCULTAR REPERTÓRIO NA ESCALA
+        // ==========================================
+        async function toggleRepertorioEscalada(botao, dataIso) {
+            const conteudo = botao.nextElementSibling;
+            
+            if (conteudo.classList.contains('mostrar')) {
+                conteudo.classList.remove('mostrar');
+                botao.innerHTML = 'Ver Repertório 🎵';
+                return;
+            }
+
+            conteudo.classList.add('mostrar');
+            botao.innerHTML = 'Ocultar Repertório ▲';
+
+            if (conteudo.innerHTML.trim() === '') {
+                conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando músicas...</div>';
+                
+                const res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
+                
+                if (res && res.sucesso) {
+                    // Filtra as músicas garantindo que a data seja exatamente a do culto selecionado
+                    const musicasDoDia = res.musicas.filter(musica => formatarData(musica.data) === formatarData(dataIso));
+
+                    if (musicasDoDia.length === 0) {
+                        conteudo.innerHTML = '<div class="item-membro-banda">Nenhuma música agendada para este culto.</div>';
+                        return;
+                    }
+
+                    let htmlMusicas = '';
+                    musicasDoDia.forEach(m => {
+                        let linkCifra = m.cifra ? `<a href="${m.cifra}" target="_blank" style="color:var(--primary); text-decoration:none; display: inline-block; margin-top: 4px;">📄 Abrir Cifra</a>` : '';
+                        
+                        htmlMusicas += `<div class="item-membro-banda" style="flex-direction: column; align-items: flex-start; gap: 2px;">
+                                            <div style="width: 100%; display: flex; justify-content: space-between;">
+                                                <span style="font-weight: 600;">${m.ordem ? m.ordem + ' - ' : ''}${m.musica}</span>
+                                                <span style="font-size: 12px; font-weight: bold; color: var(--text-light);">${m.tom}</span>
+                                            </div>
+                                            <div style="font-size: 12px;">${linkCifra}</div>
+                                        </div>`;
+                    });
+                    
+                    conteudo.innerHTML = htmlMusicas;
+                } else {
+                    conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444;">Erro ao carregar o repertório.</div>';
+                }
+            }
+        }
     </script>
 </body>
 </html>
