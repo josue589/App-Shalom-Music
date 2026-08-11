@@ -1588,6 +1588,21 @@
         // ==========================================
         // LÓGICA NOVA: EDIÇÃO DA ESCALA INTEIRA POR DIA
         // ==========================================
+        
+        // Nova função segura para carregar a lista de membros no modal de edição
+        async function carregarDatalistMembrosEdit() {
+            const dataList = document.getElementById('lista-membros-edit');
+            if (dataList.innerHTML !== '') return; // Se já carregou, não puxa de novo para poupar internet
+
+            const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
+            if (res && res.sucesso && res.membros) {
+                dataList.innerHTML = '';
+                res.membros.sort().forEach(membro => {
+                    dataList.innerHTML += `<option value="${membro}">`;
+                });
+            }
+        }
+
         async function abrirEditarEscalaDia(dataStrFormatada, dataIsoOriginal) {
             isoDataEdicaoAtual = dataIsoOriginal;
             
@@ -1595,7 +1610,8 @@
             const containerInputs = document.getElementById("container-edicao-escalas");
             containerInputs.innerHTML = ""; 
 
-            await preencherSelectMembros('lista-membros-edit', 'infoEscalaDiaEdit'); 
+            // Chama a nova função corrigida para preencher o dropdown de nomes
+            await carregarDatalistMembrosEdit();
 
             const escalasDoDia = escalasGeraisGlobais.filter(esc => {
                 const isValid = (!esc.status || !esc.status.toUpperCase().includes('DECLINADO'));
@@ -1605,7 +1621,7 @@
             escalasDoDia.forEach((esc, index) => {
                 containerInputs.innerHTML += `
                     <label style="margin-top: 15px; font-size:12px; color: var(--primary);">${esc.funcao}:</label>
-                    <input list="lista-membros-edit" id="edit-membro-${index}" class="input-edicao-em-massa" data-funcao="${esc.funcao}" value="${esc.nomeMembro}" placeholder="Integrante..." autocomplete="off" style="margin-top: 5px; margin-bottom: 0; padding: 12px;">
+                    <input list="lista-membros-edit" id="edit-membro-${index}" class="input-edicao-em-massa" data-funcao="${esc.funcao}" value="${esc.nomeMembro}" placeholder="Clique para selecionar ou digitar..." autocomplete="off" style="margin-top: 5px; margin-bottom: 0; padding: 12px;">
                 `;
             });
 
@@ -1636,21 +1652,26 @@
             btn.innerText = "⏳ Salvando...";
             btn.disabled = true;
 
-            const res = await postAPI(getScriptUrl(), {
-                acao: "editarEscalaDia",
-                dataEscala: isoDataEdicaoAtual,
-                alteracoes: alteracoesParaEnviar
-            });
+            // O bloco try...catch...finally garante que o botão destrave mesmo se a internet cair
+            try {
+                const res = await postAPI(getScriptUrl(), {
+                    acao: "editarEscalaDia",
+                    dataEscala: isoDataEdicaoAtual,
+                    alteracoes: alteracoesParaEnviar
+                });
 
-            btn.innerText = textoOriginal;
-            btn.disabled = false;
-
-            if (res && (res.sucesso || res.status === "sucesso")) {
-                mostrarNotificacao("Equipe atualizada com sucesso!", "success");
-                fecharModais();
-                carregarTodasEscalas(); 
-            } else {
-                mostrarNotificacao("Erro ao atualizar a escala.", "error");
+                if (res && (res.sucesso || res.status === "sucesso")) {
+                    mostrarNotificacao("Equipe atualizada com sucesso!", "success");
+                    fecharModais();
+                    carregarTodasEscalas(); 
+                } else {
+                    mostrarNotificacao("Erro ao atualizar a escala.", "error");
+                }
+            } catch (erro) {
+                mostrarNotificacao("Erro de comunicação com o servidor.", "error");
+            } finally {
+                btn.innerText = textoOriginal;
+                btn.disabled = false;
             }
         }
 
