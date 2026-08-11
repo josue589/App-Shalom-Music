@@ -590,7 +590,7 @@
         .textarea-cifra {
             width: 100%; height: 200px; padding: 12px;
             border: 2px solid #E5E7EB; border-radius: 12px;
-            font-family: 'Courier New', Courier, monospace; /* ESSENCIAL PARA ALINHAMENTO DAS CIFRAS */
+            font-family: 'Courier New', Courier, monospace; 
             font-size: 14px; resize: vertical; box-sizing: border-box;
             background-color: #F9FAFB; white-space: pre; outline: none;
             margin-bottom: 15px;
@@ -603,7 +603,6 @@
 <body>
 
     <div id="toast-container"></div>
-    <!-- NOVO: Áudio de Notificação -->
     <audio id="som-notificacao" preload="auto">
         <source src="https://assets.mixkit.co/active_storage/sfx/2866/2866-preview.mp3" type="audio/mpeg">
     </audio>
@@ -692,7 +691,6 @@
                         
                         <datalist id="lista-membros-edit"></datalist>
                         
-                        <!-- Lista dinâmica de inputs aparecerá aqui dentro -->
                         <div id="container-edicao-escalas" class="modal-scroll-area"></div>
                         
                         <button id="btn-salvar-edicao-escala-dia" onclick="salvarEdicaoEscalaDia()" style="margin-top:10px;">💾 Salvar Alterações</button>
@@ -779,13 +777,10 @@
         
         let usuarioAtual = null;
         let novaFotoBase64 = null;
-
-        // Variáveis globais para Edição de Repertório e de Escala Geral
         let repMusicaAtual;
-        let escalasGeraisGlobais = []; // Guarda a lista de todas as escalas carregadas
-        let isoDataEdicaoAtual = "";   // Guarda a data original que foi clicada para editar
+        let escalasGeraisGlobais = []; 
+        let isoDataEdicaoAtual = "";   
 
-        // Função de notificações visuais (Toasts)
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -812,7 +807,6 @@
             return CONFIG.IGREJAS[usuarioAtual.igrejaId].url; 
         }
 
-        // Funções de comunicação com o Google Apps Script
         async function fetchAPI(urlBase, parametros) {
             mostrarLoading(true);
             try {
@@ -844,7 +838,6 @@
             }
         }
         
-        // Função de Login Centralizado
         async function fazerLogin() {
             const email = document.getElementById('email').value.trim().toLowerCase();
             const senha = document.getElementById('senha').value.trim();
@@ -1093,7 +1086,6 @@
                             </div>`; 
                         } 
                         
-                        // Nova estrutura com os dois botões: Ver Banda e Ver Repertório
                         const areaBandaERepertorioHTML = `
                             <button class="botao-ver-banda" onclick="toggleBandaEscalada(this, '${esc.data}')">Ver Banda ▼</button>
                             <div class="conteudo-banda-dropdown"></div>
@@ -1201,9 +1193,6 @@
             } 
         }
         
-        // ==========================================
-        // Aba: Painel Administrativo (Visão Geral)
-        // ==========================================
         async function carregarTodasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
             const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' }); 
@@ -1211,7 +1200,6 @@
             if (res && res.sucesso) { 
                 escalasGeraisGlobais = res.escalas; 
 
-                // NOVO PAINEL COM 4 BOTÕES
                 let htmlAdminBox = `<div class="card" style="margin-bottom:20px; text-align:center;">
                     <h4 style="margin-top:0; margin-bottom:10px; color: var(--primary);"> Painel de Gerenciamento</h4>
                     <button class="btn-admin-panel" onclick="abrirFormEscala()">➕ Escala</button>
@@ -1328,9 +1316,6 @@
             } 
         }
 
-        // ==========================================
-        // NOVO: ABRIR MODAL PARA GERAR CIFRA PDF
-        // ==========================================
         function abrirModalNovaMusica() {
             document.getElementById('modalNovaMusica').style.display = 'flex';
         }
@@ -1373,7 +1358,6 @@
             }
         }
 
-        // Formulário Antigo (para apenas colocar o link de fora)
         function abrirFormRepertorio() { 
             document.getElementById('conteudo-aba').innerHTML = `<div class="card">
                 <h3 style="color:var(--primary); margin-top:0;">🔗 Linkar Música Existente</h3>
@@ -1451,7 +1435,6 @@
             } 
         }
         
-        // Aba: Todas as Escalas
         async function carregarProximaEscala() { 
             const div = document.getElementById('conteudo-aba'); 
             const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' }); 
@@ -1520,7 +1503,6 @@
             } 
         }
 
-       // Aba: Repertório
         async function carregarRepertorio() { 
             const div = document.getElementById('conteudo-aba'); 
             try { 
@@ -1589,14 +1571,9 @@
             } 
         }
 
-        // ==========================================
-        // LÓGICA NOVA: EDIÇÃO DA ESCALA INTEIRA POR DIA
-        // ==========================================
-        
-        // Nova função segura para carregar a lista de membros no modal de edição
         async function carregarDatalistMembrosEdit() {
             const dataList = document.getElementById('lista-membros-edit');
-            if (dataList.innerHTML !== '') return; // Se já carregou, não puxa de novo para poupar internet
+            if (dataList.innerHTML !== '') return; 
 
             const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
             if (res && res.sucesso && res.membros) {
@@ -1614,7 +1591,6 @@
             const containerInputs = document.getElementById("container-edicao-escalas");
             containerInputs.innerHTML = ""; 
 
-            // Chama a nova função corrigida para preencher o dropdown de nomes
             await carregarDatalistMembrosEdit();
 
             const escalasDoDia = escalasGeraisGlobais.filter(esc => {
@@ -1656,7 +1632,6 @@
             btn.innerText = "⏳ Salvando...";
             btn.disabled = true;
 
-            // O bloco try...catch...finally garante que o botão destrave mesmo se a internet cair
             try {
                 const res = await postAPI(getScriptUrl(), {
                     acao: "editarEscalaDia",
@@ -1679,9 +1654,6 @@
             }
         }
 
-        // ==========================================
-        // EDIÇÃO DE REPERTÓRIO
-        // ==========================================
         function abrirEditarRepertorio(musica, ordemAtual, cifraAtual, youtubeAtual, spotifyAtual) {
             repMusicaAtual = musica;
             
@@ -1760,7 +1732,6 @@
             document.getElementById("modal-declinio").style.display = "none";
             document.getElementById("modalNovaMusica").style.display = "none";
             
-            // Limpa os campos do Modal de Nova Música
             document.getElementById("inputNomeMusica").value = "";
             document.getElementById("inputTomMusica").value = "";
             document.getElementById("inputArtistaMusica").value = "";
@@ -1771,9 +1742,6 @@
             document.getElementById('loading').style.display = mostrar ? 'block' : 'none'; 
         }
 
-        // ==========================================
-        // LÓGICA: MOSTRAR/OCULTAR BANDA NA ESCALA
-        // ==========================================
         async function toggleBandaEscalada(botao, dataIso) {
             const conteudo = botao.nextElementSibling;
             
@@ -1817,9 +1785,7 @@
                 }
             }
         }
-        // ==========================================
-        // LÓGICA: MOSTRAR/OCULTAR REPERTÓRIO NA ESCALA
-        // ==========================================
+
         async function toggleRepertorioEscalada(botao, dataIso) {
             const conteudo = botao.nextElementSibling;
             
@@ -1835,33 +1801,36 @@
             if (conteudo.innerHTML.trim() === '') {
                 conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando músicas...</div>';
                 
-                const res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
-                
-                if (res && res.sucesso) {
-                    // Filtra as músicas garantindo que a data seja exatamente a do culto selecionado
-                    const musicasDoDia = res.musicas.filter(musica => formatarData(musica.data) === formatarData(dataIso));
-
-                    if (musicasDoDia.length === 0) {
-                        conteudo.innerHTML = '<div class="item-membro-banda">Nenhuma música agendada para este culto.</div>';
-                        return;
-                    }
-
-                    let htmlMusicas = '';
-                    musicasDoDia.forEach(m => {
-                        let linkCifra = m.cifra ? `<a href="${m.cifra}" target="_blank" style="color:var(--primary); text-decoration:none; display: inline-block; margin-top: 4px;">📄 Abrir Cifra</a>` : '';
-                        
-                        htmlMusicas += `<div class="item-membro-banda" style="flex-direction: column; align-items: flex-start; gap: 2px;">
-                                            <div style="width: 100%; display: flex; justify-content: space-between;">
-                                                <span style="font-weight: 600;">${m.ordem ? m.ordem + ' - ' : ''}${m.musica}</span>
-                                                <span style="font-size: 12px; font-weight: bold; color: var(--text-light);">${m.tom}</span>
-                                            </div>
-                                            <div style="font-size: 12px;">${linkCifra}</div>
-                                        </div>`;
-                    });
+                try {
+                    const res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
                     
-                    conteudo.innerHTML = htmlMusicas;
-                } else {
-                    conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444;">Erro ao carregar o repertório.</div>';
+                    if (res && res.sucesso) {
+                        const musicasDoDia = res.musicas.filter(musica => formatarData(musica.data) === formatarData(dataIso));
+
+                        if (musicasDoDia.length === 0) {
+                            conteudo.innerHTML = '<div class="item-membro-banda" style="justify-content: center;">Nenhuma música agendada para este culto.</div>';
+                            return;
+                        }
+
+                        let htmlMusicas = '';
+                        musicasDoDia.forEach(m => {
+                            let linkCifra = m.cifra ? `<a href="${m.cifra}" target="_blank" style="color:var(--primary); text-decoration:none; display: inline-block; margin-top: 4px; font-weight: 600;">📄 Abrir Cifra</a>` : '';
+                            
+                            htmlMusicas += `<div class="item-membro-banda" style="flex-direction: column; align-items: flex-start; gap: 2px;">
+                                                <div style="width: 100%; display: flex; justify-content: space-between;">
+                                                    <span style="font-weight: 600;">${m.ordem ? m.ordem + ' - ' : ''}${m.musica}</span>
+                                                    <span style="font-size: 12px; font-weight: bold; color: var(--text-light);">${m.tom || ''}</span>
+                                                </div>
+                                                <div style="font-size: 12px;">${linkCifra}</div>
+                                            </div>`;
+                        });
+                        
+                        conteudo.innerHTML = htmlMusicas;
+                    } else {
+                        conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444; justify-content: center;">Erro ao carregar o repertório.</div>';
+                    }
+                } catch (e) {
+                    conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444; justify-content: center;">Falha de conexão com o servidor.</div>';
                 }
             }
         }
