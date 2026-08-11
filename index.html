@@ -1093,8 +1093,12 @@
                             </div>`; 
                         } 
                         
-                        const areaBandaHTML = `
+                        // Nova estrutura com os dois botões: Ver Banda e Ver Repertório
+                        const areaBandaERepertorioHTML = `
                             <button class="botao-ver-banda" onclick="toggleBandaEscalada(this, '${esc.data}')">Ver Banda ▼</button>
+                            <div class="conteudo-banda-dropdown"></div>
+                            
+                            <button class="botao-ver-banda" style="color: var(--success);" onclick="toggleRepertorioEscalada(this, '${esc.data}')">Ver Repertório 🎵</button>
                             <div class="conteudo-banda-dropdown"></div>
                         `;
 
@@ -1102,7 +1106,7 @@
                             <h3 style="margin:0 0 8px 0; color:#000000;">🗓️ ${dataFormatada}</h3>
                             <p style="margin:0; color:#000000;"><strong>Função:</strong> ${esc.funcao}</p>
                             <p style="margin:0; margin-top: 8px;">${statusHTML}</p>
-                            ${areaBandaHTML}
+                            ${areaBandaERepertorioHTML}
                             ${botoesHTML}
                         </div>`; 
                     }); 
