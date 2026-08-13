@@ -775,26 +775,11 @@
             navigator.serviceWorker.register('sw.js'); 
         }
         
-        // ==========================================
-        // VARIÁVEIS GLOBAIS E CACHE DE MEMÓRIA RÁPIDA
-        // ==========================================
         let usuarioAtual = null;
         let novaFotoBase64 = null;
         let repMusicaAtual;
         let escalasGeraisGlobais = []; 
         let isoDataEdicaoAtual = "";   
-
-        // Cache para deixar a troca de abas instantânea
-        let cacheMinhasEscalas = null;
-        let cacheTodasEscalas = null;
-        let cacheRepertorio = null;
-        let cacheMembros = null;
-
-        function limparCacheApp() {
-            cacheMinhasEscalas = null;
-            cacheTodasEscalas = null;
-            cacheRepertorio = null;
-        }
 
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('toast-container');
@@ -900,7 +885,6 @@
                         email: email 
                     };
                     localStorage.setItem('louvor_user', JSON.stringify(usuarioAtual)); 
-                    limparCacheApp(); // Limpa o cache ao logar de novo
                     mostrarApp();
                 } else { 
                     msg.textContent = "Erro ao buscar seus dados na Igreja."; 
@@ -917,7 +901,6 @@
         function fazerLogout() {
             localStorage.removeItem('louvor_user'); 
             usuarioAtual = null; 
-            limparCacheApp();
             document.getElementById('senha').value = '';
             document.getElementById('tela-app').style.display = 'none'; 
             document.getElementById('tela-login').style.display = 'flex';
@@ -1076,14 +1059,7 @@
 
         async function carregarMinhasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
-            
-            let res;
-            if (cacheMinhasEscalas) {
-                res = cacheMinhasEscalas;
-            } else {
-                res = await fetchAPI(getScriptUrl(), { acao: 'minhasEscalas', nome: usuarioAtual.nome });
-                if (res && res.sucesso) cacheMinhasEscalas = res;
-            }
+            const res = await fetchAPI(getScriptUrl(), { acao: 'minhasEscalas', nome: usuarioAtual.nome }); 
             
             if (res && res.sucesso) { 
                 let htmlLista = ''; 
@@ -1156,7 +1132,6 @@
             const res = await postAPI(getScriptUrl(), { acao: 'confirmarPresenca', nome: usuarioAtual.nome, dataCulto: dataIso, funcao: funcaoDaEscala }); 
             if (res && res.sucesso) { 
                 mostrarNotificacao("Presença confirmada com sucesso!", "success"); 
-                limparCacheApp(); // Limpa cache para forçar recarregamento
                 carregarMinhasEscalas(); 
             } else { 
                 mostrarNotificacao("Erro ao confirmar presença.", "error"); 
@@ -1171,14 +1146,7 @@
             modal.style.display = 'flex'; 
             select.innerHTML = '<option value="">Buscando integrantes...</option>'; 
             
-            let res;
-            if (cacheMembros) {
-                res = cacheMembros;
-            } else {
-                res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
-                if (res && res.sucesso) cacheMembros = res;
-            }
-             
+            const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' }); 
             if (res && res.sucesso && res.membros) { 
                 select.innerHTML = '<option value="">Selecione quem vai no seu lugar...</option>'; 
                 res.membros.sort().forEach(membro => { 
@@ -1219,7 +1187,6 @@
             
             if (res && res.sucesso) { 
                 mostrarNotificacao("Escala declinada com sucesso. Substituto registrado!", "success"); 
-                limparCacheApp(); // Limpa cache
                 carregarMinhasEscalas(); 
             } else { 
                 mostrarNotificacao("Falha ao declinar.", "error"); 
@@ -1228,14 +1195,7 @@
         
         async function carregarTodasEscalas() { 
             const div = document.getElementById('conteudo-aba'); 
-            
-            let res;
-            if (cacheTodasEscalas) {
-                res = cacheTodasEscalas;
-            } else {
-                res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' });
-                if (res && res.sucesso) cacheTodasEscalas = res;
-            }
+            const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' }); 
             
             if (res && res.sucesso) { 
                 escalasGeraisGlobais = res.escalas; 
@@ -1324,14 +1284,7 @@
             if (dataList.innerHTML !== '') return; 
 
             inputNome.placeholder = "Buscando integrantes..."; 
-            
-            let res;
-            if (cacheMembros) {
-                res = cacheMembros;
-            } else {
-                res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
-                if (res && res.sucesso) cacheMembros = res;
-            }
+            const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' }); 
             
             if (res && res.sucesso && res.membros) { 
                 inputNome.placeholder = "Clique ou digite para pesquisar..."; 
@@ -1357,7 +1310,6 @@
             const res = await postAPI(getScriptUrl(), { acao: 'cadastrarEscala', data: data, funcao: funcao, nomeMembro: nome }); 
             if(res && res.sucesso) { 
                 mostrarNotificacao("Escala cadastrada com sucesso!", "success"); 
-                limparCacheApp(); // Limpa cache 
                 mudarAba('admin'); 
             } else { 
                 mostrarNotificacao("Erro ao salvar a escala.", "error"); 
@@ -1400,7 +1352,6 @@
             if (res && (res.sucesso || res.status === "sucesso")) {
                 mostrarNotificacao("Música salva! PDF gerado no Drive.", "success");
                 fecharModais();
-                limparCacheApp(); // Limpa cache para listar a nova música
                 mudarAba('admin'); 
             } else {
                 mostrarNotificacao("Erro ao gerar PDF: " + (res ? res.erro : "Falha de conexão"), "error");
@@ -1439,7 +1390,6 @@
             const res = await postAPI(getScriptUrl(), { acao: 'cadastrarRepertorio', data: data, ordem: ordem, musica: nome, tom: tom, cifra: cifra, youtube: youtube, spotify: spotify });
             if(res && res.sucesso) { 
                 mostrarNotificacao("Música adicionada ao repertório!", "success"); 
-                limparCacheApp(); // Limpa cache
                 mudarAba('admin'); 
             } else { 
                 mostrarNotificacao("Erro ao salvar a música.", "error"); 
@@ -1479,7 +1429,6 @@
             
             if(res && res.sucesso) { 
                 mostrarNotificacao("Membro cadastrado com sucesso nas duas bases!", "success"); 
-                limparCacheApp(); // Força renovar lista
                 mudarAba('admin'); 
             } else { 
                 mostrarNotificacao("Erro ao salvar integrante.", "error"); 
@@ -1488,14 +1437,7 @@
         
         async function carregarProximaEscala() { 
             const div = document.getElementById('conteudo-aba'); 
-            
-            let res;
-            if (cacheTodasEscalas) {
-                res = cacheTodasEscalas;
-            } else {
-                res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' });
-                if (res && res.sucesso) cacheTodasEscalas = res;
-            }
+            const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' }); 
             
             if (res && res.sucesso) { 
                 if (!res.escalas || res.escalas.length === 0) { 
@@ -1564,14 +1506,7 @@
         async function carregarRepertorio() { 
             const div = document.getElementById('conteudo-aba'); 
             try { 
-                let res;
-                if (cacheRepertorio) {
-                    res = cacheRepertorio;
-                } else {
-                    res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
-                    if (res && res.sucesso) cacheRepertorio = res;
-                }
-                
+                const res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' }); 
                 if (res && res.sucesso) { 
                     if (!res.musicas || res.musicas.length === 0) { 
                         div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum repertório futuro cadastrado.</p></div>`; 
@@ -1592,21 +1527,23 @@
                             dataAtual = dataStr; 
                         } 
                         
-                        let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 4px 10px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 11px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
-
-                        let cifraHtml = ''; 
+                        let cifraFormatada = ''; 
                         if (musica.cifra) { 
-                            cifraHtml = `<a href="${musica.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a>`; 
+                            cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) { 
+                                return `<a href="${url}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">📄 Cifra - ${musica.musica}</a>`; 
+                            }); 
                         } 
+                        
+                        const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : ''; 
                         
                         let youtubeHtml = ''; 
                         if (musica.youtube) { 
-                            youtubeHtml = `<a href="${musica.youtube}" target="_blank" style="${estiloBotao}">▶️ YouTube</a>`; 
+                            youtubeHtml = `<div class="cifra-box"><a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">▶️ Assistir no YouTube</a></div>`; 
                         } 
 
                         let spotifyHtml = ''; 
                         if (musica.spotify) { 
-                            spotifyHtml = `<a href="${musica.spotify}" target="_blank" style="${estiloBotao}">🎧 Spotify</a>`; 
+                            spotifyHtml = `<div class="cifra-box"><a href="${musica.spotify}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.669 11.538a.5.5 0 0 1-.686.165c-1.879-1.147-4.243-1.407-7.028-.77a.499.499 0 0 1-.222-.973c3.048-.696 5.662-.397 7.77.892a.5.5 0 0 1 .166.686zm.979-2.288a.623.623 0 0 1-.858.205c-2.15-1.321-5.428-1.704-7.972-.932a.625.625 0 0 1-.362-1.194c2.905-.881 6.517-.454 8.986 1.063a.624.624 0 0 1 .206.858zm.084-2.268C10.154 5.56 5.9 5.419 3.438 6.166a.748.748 0 1 1-.434-1.432c2.825-.857 7.523-.692 10.492 1.07a.747.747 0 1 1-.764 1.284z"/></svg>Ouvir no Spotify</a></div>`; 
                         }
                         
                        const btnEditarRep = isAdmin ? `
@@ -1620,7 +1557,7 @@
                             <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
                             <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
                             ${btnEditarRep}
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">${cifraHtml}${youtubeHtml}${spotifyHtml}</div>
+                            ${youtubeHtml}${spotifyHtml}${cifraHtml}
                         </div>`; 
                     }); 
                     
@@ -1638,14 +1575,7 @@
             const dataList = document.getElementById('lista-membros-edit');
             if (dataList.innerHTML !== '') return; 
 
-            let res;
-            if (cacheMembros) {
-                res = cacheMembros;
-            } else {
-                res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
-                if (res && res.sucesso) cacheMembros = res;
-            }
-            
+            const res = await fetchAPI(getScriptUrl(), { acao: 'listarMembros' });
             if (res && res.sucesso && res.membros) {
                 dataList.innerHTML = '';
                 res.membros.sort().forEach(membro => {
@@ -1703,22 +1633,21 @@
             btn.disabled = true;
 
             try {
-                await postAPI(getScriptUrl(), {
+                const res = await postAPI(getScriptUrl(), {
                     acao: "editarEscalaDia",
                     dataEscala: isoDataEdicaoAtual,
                     alteracoes: alteracoesParaEnviar
                 });
 
-                mostrarNotificacao("Equipe atualizada com sucesso!", "success");
-                fecharModais();
-                limparCacheApp(); // Limpa cache
-                carregarTodasEscalas(); 
-                
+                if (res && (res.sucesso || res.status === "sucesso")) {
+                    mostrarNotificacao("Equipe atualizada com sucesso!", "success");
+                    fecharModais();
+                    carregarTodasEscalas(); 
+                } else {
+                    mostrarNotificacao("Erro ao atualizar a escala.", "error");
+                }
             } catch (erro) {
-                mostrarNotificacao("Equipe atualizada com sucesso!", "success");
-                fecharModais();
-                limparCacheApp(); // Limpa cache
-                carregarTodasEscalas();
+                mostrarNotificacao("Erro de comunicação com o servidor.", "error");
             } finally {
                 btn.innerText = textoOriginal;
                 btn.disabled = false;
@@ -1771,7 +1700,6 @@
             if (res && (res.sucesso || res.status === "sucesso")) {
                 mostrarNotificacao("Repertório atualizado com sucesso!", "success");
                 fecharModais();
-                limparCacheApp(); // Limpa cache
                 carregarRepertorio(); 
             } else {
                 mostrarNotificacao("Erro ao atualizar o repertório.", "error");
@@ -1792,7 +1720,6 @@
 
             if (res && res.sucesso) {
                 mostrarNotificacao("Música removida do repertório!", "success");
-                limparCacheApp(); // Limpa cache
                 carregarRepertorio(); 
             } else {
                 mostrarNotificacao("Erro ao excluir a música.", "error");
@@ -1830,13 +1757,7 @@
             if (conteudo.innerHTML.trim() === '') {
                 conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando integrantes...</div>';
                 
-                let res;
-                if (cacheTodasEscalas) {
-                    res = cacheTodasEscalas;
-                } else {
-                    res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' });
-                    if (res && res.sucesso) cacheTodasEscalas = res;
-                }
+                const res = await fetchAPI(getScriptUrl(), { acao: 'todasEscalas' });
                 
                 if (res && res.sucesso) {
                     const bandaDoDia = res.escalas.filter(esc => {
@@ -1865,6 +1786,9 @@
             }
         }
 
+       // ==========================================
+        // LÓGICA: MOSTRAR/OCULTAR REPERTÓRIO NA ESCALA
+        // ==========================================
         async function toggleRepertorioEscalada(botao, dataIso) {
             const conteudo = botao.nextElementSibling;
             
@@ -1881,13 +1805,7 @@
                 conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando músicas...</div>';
                 
                 try {
-                    let res;
-                    if (cacheRepertorio) {
-                        res = cacheRepertorio;
-                    } else {
-                        res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
-                        if (res && res.sucesso) cacheRepertorio = res;
-                    }
+                    const res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
                     
                     if (res && res.sucesso) {
                         const musicasDoDia = res.musicas.filter(musica => formatarData(musica.data) === formatarData(dataIso));
@@ -1897,17 +1815,21 @@
                             return;
                         }
 
+                        // Adiciona o cabeçalho "Tom" alinhado à direita
                         let htmlMusicas = '<div style="width: 100%; text-align: right; font-size: 13px; color: var(--success); font-weight: bold; margin-bottom: -5px; padding-top: 10px;">Tom</div>';
                         
                         musicasDoDia.forEach(m => {
+                            // Cria um estilo único com o mesmo gradiente para todos os botões
                             let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 4px 10px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
                             
                             let linkCifra = m.cifra ? `<a href="${m.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a>` : '';
                             let linkYoutube = m.youtube ? `<a href="${m.youtube}" target="_blank" style="${estiloBotao}">▶️ YouTube</a>` : '';
                             let linkSpotify = m.spotify ? `<a href="${m.spotify}" target="_blank" style="${estiloBotao}">🎧 Spotify</a>` : '';
                             
+                            // Agrupa os botões com um espaçamento ajustado
                             let linksHTML = `<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 11px;">${linkCifra}${linkYoutube}${linkSpotify}</div>`;
 
+                            // Monta o visual de cada música
                             htmlMusicas += `<div class="item-membro-banda" style="flex-direction: column; align-items: flex-start; padding: 12px 0;">
                                                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
                                                     <span style="font-weight: 700; font-size: 14px; color: var(--text);">${m.ordem ? m.ordem + ' - ' : ''}${m.musica}</span>
