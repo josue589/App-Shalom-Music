@@ -751,13 +751,14 @@
                     </div>
                 </div>
 
-                <!-- Menu de Abas -->
+                <!-- Menu de Abas (Com o novo botão 'Repertório') -->
                 <div class="nav-tabs">
                     <div class="nav-tab active" onclick="mudarAba('minhas')">
                         Minhas Escalas <span id="dot-notificacao" class="badge-notificacao" style="display:none;"></span>
                     </div>
                     <div class="nav-tab" onclick="mudarAba('geral')">Todas as Escalas</div>
-                    <div class="nav-tab" onclick="mudarAba('repertorio')">Setlist</div>
+                    <div class="nav-tab" onclick="mudarAba('setlist')">Setlist</div>
+                    <div class="nav-tab" onclick="mudarAba('repertorio')">Repertório</div>
                     <div class="nav-tab" id="tab-admin" onclick="mudarAba('admin')" style="display:none; font-weight:800;">Visão Geral</div>
                 </div>
                 
@@ -787,13 +788,16 @@
         // Cache para deixar a troca de abas instantânea
         let cacheMinhasEscalas = null;
         let cacheTodasEscalas = null;
-        let cacheRepertorio = null;
+        let cacheSetlist = null; // Antigo cacheRepertorio
+        let cacheBancoMusicas = null; // Novo Cache Geral
         let cacheMembros = null;
 
         function limparCacheApp() {
             cacheMinhasEscalas = null;
             cacheTodasEscalas = null;
-            cacheRepertorio = null;
+            cacheSetlist = null;
+            cacheBancoMusicas = null;
+            cacheMembros = null;
         }
 
         function mostrarNotificacao(mensagem, tipo = 'success') {
@@ -1063,7 +1067,8 @@
             
             if (aba === 'minhas') carregarMinhasEscalas(); 
             if (aba === 'geral') carregarProximaEscala(); 
-            if (aba === 'repertorio') carregarRepertorio(); 
+            if (aba === 'setlist') carregarSetlist(); 
+            if (aba === 'repertorio') carregarBancoMusicas(); 
             if (aba === 'admin') carregarTodasEscalas(); 
         }
 
@@ -1566,15 +1571,15 @@
             } 
         }
 
-        async function carregarRepertorio() { 
+        async function carregarSetlist() { 
             const div = document.getElementById('conteudo-aba'); 
             try { 
                 let res;
-                if (cacheRepertorio) {
-                    res = cacheRepertorio;
+                if (cacheSetlist) {
+                    res = cacheSetlist;
                 } else {
-                    res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
-                    if (res && res.sucesso) cacheRepertorio = res;
+                    res = await fetchAPI(getScriptUrl(), { acao: 'setlist' });
+                    if (res && res.sucesso) cacheSetlist = res;
                 }
                 
                 if (res && res.sucesso) { 
@@ -1639,6 +1644,69 @@
             } catch (erro) { 
                 div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro no aplicativo. Verifique se a função existe.</p></div>`; 
             } 
+        }
+
+        // ==========================================
+        // NOVA FUNÇÃO: CARREGAR BANCO DE MÚSICAS (REPERTÓRIO GERAL)
+        // ==========================================
+        async function carregarBancoMusicas() {
+            const div = document.getElementById('conteudo-aba');
+            div.innerHTML = "<div class='card'><p style='color:var(--text); text-align:center;'>⏳ Carregando banco de músicas...</p></div>";
+
+            try {
+                let res;
+                if (cacheBancoMusicas) {
+                    res = cacheBancoMusicas;
+                } else {
+                    // Chama a nova ação 'repertorio' que traz TODAS as músicas cadastradas
+                    res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
+                    if (res && res.sucesso) cacheBancoMusicas = res;
+                }
+
+                if (res && res.sucesso) {
+                    if (!res.musicas || res.musicas.length === 0) {
+                        div.innerHTML = `<div class="card"><p style="color:#000000; text-align:center;">Nenhuma música encontrada no banco de dados.</p></div>`;
+                        return;
+                    }
+
+                    let html = '<h3 style="color:#000000; text-align:center; margin-bottom:15px;">Banco de Músicas 📚</h3>';
+
+                    res.musicas.forEach(item => {
+                        let botaoCifra = "";
+                        let botaoYouTube = "";
+                        let botaoSpotify = "";
+                        
+                        // Estilo padrão dos botões do banco de dados
+                        let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
+
+                        if (item.cifra && item.cifra !== "") {
+                            botaoCifra = `<a href="${item.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a> `;
+                        }
+                        if (item.youtube && item.youtube !== "") {
+                            botaoYouTube = `<a href="${item.youtube}" target="_blank" style="${estiloBotao} background: linear-gradient(135deg, #EF4444, #B91C1C);">▶️ YouTube</a> `;
+                        }
+                        if (item.spotify && item.spotify !== "") {
+                            botaoSpotify = `<a href="${item.spotify}" target="_blank" style="${estiloBotao} background: linear-gradient(135deg, #10B981, #059669);">🎧 Spotify</a>`;
+                        }
+
+                        // Monta o Card de cada música
+                        html += `
+                        <div class="card" style="margin-bottom:15px; border-left: 5px solid var(--primary); padding: 15px;">
+                            <h4 style="margin:0 0 5px 0; color:var(--text);">${item.musica}</h4>
+                            <p style="margin:0 0 10px 0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${item.tom || 'N/A'}</p>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                ${botaoCifra} ${botaoYouTube} ${botaoSpotify}
+                            </div>
+                        </div>`;
+                    });
+
+                    div.innerHTML = html;
+                } else {
+                    div.innerHTML = `<div class="card"><p style="color:#EF4444; text-align:center;">Erro ao buscar: ${res ? res.erro : 'Servidor não respondeu.'}</p></div>`;
+                }
+            } catch (erro) {
+                div.innerHTML = `<div class="card"><p style="color:#EF4444; text-align:center;">Erro no aplicativo. Tente novamente mais tarde.</p></div>`;
+            }
         }
 
         async function carregarDatalistMembrosEdit() {
@@ -1779,7 +1847,7 @@
                 mostrarNotificacao("Setlist atualizado com sucesso!", "success");
                 fecharModais();
                 limparCacheApp(); 
-                carregarRepertorio(); 
+                carregarSetlist(); 
             } else {
                 mostrarNotificacao("Erro ao atualizar o Setlist.", "error");
             }
@@ -1800,7 +1868,7 @@
             if (res && res.sucesso) {
                 mostrarNotificacao("Música removida do Setlist!", "success");
                 limparCacheApp(); 
-                carregarRepertorio(); 
+                carregarSetlist(); 
             } else {
                 mostrarNotificacao("Erro ao excluir a música.", "error");
             }
@@ -1889,11 +1957,11 @@
                 
                 try {
                     let res;
-                    if (cacheRepertorio) {
-                        res = cacheRepertorio;
+                    if (cacheSetlist) {
+                        res = cacheSetlist;
                     } else {
-                        res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
-                        if (res && res.sucesso) cacheRepertorio = res;
+                        res = await fetchAPI(getScriptUrl(), { acao: 'setlist' });
+                        if (res && res.sucesso) cacheSetlist = res;
                     }
                     
                     if (res && res.sucesso) {
