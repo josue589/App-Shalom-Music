@@ -1604,24 +1604,11 @@
                             dataAtual = dataStr; 
                         } 
                         
-                        let cifraFormatada = ''; 
-                        if (musica.cifra) { 
-                            cifraFormatada = musica.cifra.replace(/(https?:\/\/[^\s]+)/g, function(url) { 
-                                return `<a href="${url}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">📄 Cifra - ${musica.musica}</a>`; 
-                            }); 
-                        } 
-                        
-                        const cifraHtml = cifraFormatada ? `<div class="cifra-box">${cifraFormatada}</div>` : ''; 
-                        
-                        let youtubeHtml = ''; 
-                        if (musica.youtube) { 
-                            youtubeHtml = `<div class="cifra-box"><a href="${musica.youtube}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: block; width: 100%;">▶️ Assistir no YouTube</a></div>`; 
-                        } 
+                        let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
 
-                        let spotifyHtml = ''; 
-                        if (musica.spotify) { 
-                            spotifyHtml = `<div class="cifra-box"><a href="${musica.spotify}" target="_blank" style="color: white; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.669 11.538a.5.5 0 0 1-.686.165c-1.879-1.147-4.243-1.407-7.028-.77a.499.499 0 0 1-.222-.973c3.048-.696 5.662-.397 7.77.892a.5.5 0 0 1 .166.686zm.979-2.288a.623.623 0 0 1-.858.205c-2.15-1.321-5.428-1.704-7.972-.932a.625.625 0 0 1-.362-1.194c2.905-.881 6.517-.454 8.986 1.063a.624.624 0 0 1 .206.858zm.084-2.268C10.154 5.56 5.9 5.419 3.438 6.166a.748.748 0 1 1-.434-1.432c2.825-.857 7.523-.692 10.492 1.07a.747.747 0 1 1-.764 1.284z"/></svg>Ouvir no Spotify</a></div>`; 
-                        }
+                        let cifraHtml = musica.cifra ? `<a href="${musica.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a>` : ''; 
+                        let youtubeHtml = musica.youtube ? `<a href="${musica.youtube}" target="_blank" style="${estiloBotao}">▶️ YouTube</a>` : ''; 
+                        let spotifyHtml = musica.spotify ? `<a href="${musica.spotify}" target="_blank" style="${estiloBotao}">🎧 Spotify</a>` : '';
                         
                        const btnEditarRep = isAdmin ? `
                             <div style="display: flex; gap: 20px; margin-top: 8px;">
@@ -1631,10 +1618,14 @@
                         ` : '';
 
                         html += `<div style="margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #eee;">
-                            <h4 style="margin:0 0 5px 0; color:#000000;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
-                            <p style="margin:0; font-size:14px; color:#666;"><strong>Tom:</strong> ${musica.tom || 'Não definido'}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4 style="margin:0; color:var(--text); font-size: 15px;">${musica.ordem ? musica.ordem + ' - ' : ''}${musica.musica}</h4>
+                                <span style="font-size:14px; font-weight:600; color:var(--text-light);">Tom: ${musica.tom || 'N/A'}</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; align-items: center;">
+                                ${cifraHtml} ${youtubeHtml} ${spotifyHtml}
+                            </div>
                             ${btnEditarRep}
-                            ${youtubeHtml}${spotifyHtml}${cifraHtml}
                         </div>`; 
                     }); 
                     
@@ -1673,48 +1664,30 @@
                     let html = '<h3 style="color:#000000; text-align:center; margin-bottom:15px;">Banco de Músicas 📚</h3>';
 
                     res.musicas.forEach(item => {
-                       let botaoCifra = "";
+                        let botaoCifra = "";
                         let botaoYouTube = "";
                         let botaoSpotify = "";
                         
-                        let estiloIcone = "background: transparent !important; box-shadow: none !important; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;";
+                        // Volta o estilo padrão com gradiente e texto
+                        let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
 
                         if (item.cifra && item.cifra !== "") {
-                            botaoCifra = `
-                            <a href="${item.cifra}" target="_blank" title="Ver Cifra" style="${estiloIcone}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
-                                    <path fill="#4655F6" d="M20 8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 4.5l3.5 3.5H14v-3.5zM16 17H8v-2h8v2zm0-4H8v-2h8v2z"/>
-                                </svg>
-                            </a>`;
+                            botaoCifra = `<a href="${item.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a> `;
                         }
-                        
                         if (item.youtube && item.youtube !== "") {
-                            botaoYouTube = `
-                            <a href="${item.youtube}" target="_blank" title="Assistir no YouTube" style="${estiloIcone}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
-                                  <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
-                                  <path fill="#FFFFFF" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                </svg>
-                            </a>`;
+                            botaoYouTube = `<a href="${item.youtube}" target="_blank" style="${estiloBotao}">▶️ YouTube</a> `;
                         }
-                        
                         if (item.spotify && item.spotify !== "") {
-                            botaoSpotify = `
-                            <a href="${item.spotify}" target="_blank" title="Ouvir no Spotify" style="${estiloIcone}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
-                                    <path fill="#1DB954" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.394-.687.522-1.082.282-2.966-1.815-6.7-2.224-11.085-1.218-.462.106-.91-.186-1.016-.648-.106-.462.186-.91.648-1.016 4.821-1.106 8.948-.646 12.25 1.517.394.24.522.687.285 1.083zm1.428-3.192c-.301.492-.933.656-1.424.355-3.39-2.083-8.625-2.671-12.72-1.464-.55.162-1.127-.152-1.289-.702-.162-.55.152-1.127.702-1.289 4.71-1.385 10.493-.73 14.376 1.657.492.301.656.933.355 1.443zm.126-3.332C15.115 8.449 8.784 8.243 5.12 9.355c-.66.2-1.365-.173-1.565-.833-.2-.66.173-1.365.833-1.565 4.256-1.29 11.236-1.05 15.86 1.696.59.349.782 1.111.433 1.701-.349.59-1.111.782-1.701.433z"/>
-                                </svg>
-                            </a>`;
+                            botaoSpotify = `<a href="${item.spotify}" target="_blank" style="${estiloBotao}">🎧 Spotify</a>`;
                         }
 
-                        // Novo Layout: Título e Tom na primeira linha. Botões na segunda linha.
                         html += `
                         <div class="card" style="margin-bottom:8px; border-left: 5px solid var(--primary); padding: 12px 15px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                 <h4 style="margin:0; color:var(--text); font-size: 15px;">${item.musica}</h4>
                                 <span style="font-size:14px; font-weight:600; color:var(--text-light);">Tom: ${item.tom || 'N/A'}</span>
                             </div>
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start;">
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; align-items: center;">
                                 ${botaoCifra} ${botaoYouTube} ${botaoSpotify}
                             </div>
                         </div>`;
