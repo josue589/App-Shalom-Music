@@ -265,6 +265,8 @@
 
         .nav-tabs { 
             display: flex; 
+            justify-content: center; /* Centraliza os botões na tela */
+            gap: 5px; /* Define o espaço exato entre um botão e outro (aumente ou diminua se quiser) */
             background: linear-gradient(to right, var(--primary), var(--success)); 
             padding: 6px; 
             border-radius: 14px; 
@@ -279,12 +281,12 @@
         }
 
         .nav-tab { 
-            flex: 1; 
-            padding: 12px 10px; 
+            /* A propriedade 'flex: 1;' foi removida para não esticar os botões forçadamente */
+            padding: 10px 14px; /* Ajusta a "gordura" do botão ao redor do texto */
             text-align: center; 
             background: transparent; 
             border-radius: 10px; 
-            font-size: 14px; 
+            font-size: 13px; /* Fonte levemente menor para garantir que os 4 caibam na tela do celular */
             font-weight: 600; 
             color: rgba(255, 255, 255, 0.9); 
             white-space: nowrap; 
