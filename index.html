@@ -1660,7 +1660,6 @@
                 if (cacheBancoMusicas) {
                     res = cacheBancoMusicas;
                 } else {
-                    // Chama a nova ação 'repertorio' que traz TODAS as músicas cadastradas
                     res = await fetchAPI(getScriptUrl(), { acao: 'repertorio' });
                     if (res && res.sucesso) cacheBancoMusicas = res;
                 }
@@ -1678,26 +1677,28 @@
                         let botaoYouTube = "";
                         let botaoSpotify = "";
                         
-                        // Estilo padrão dos botões do banco de dados
+                        // 1º - Estilo padrão para TODOS os botões (sem sobrescrever as cores)
                         let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
 
                         if (item.cifra && item.cifra !== "") {
                             botaoCifra = `<a href="${item.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a> `;
                         }
                         if (item.youtube && item.youtube !== "") {
-                            botaoYouTube = `<a href="${item.youtube}" target="_blank" style="${estiloBotao} background: linear-gradient(135deg, #EF4444, #B91C1C);">▶️ YouTube</a> `;
+                            botaoYouTube = `<a href="${item.youtube}" target="_blank" style="${estiloBotao}">▶️ YouTube</a> `;
                         }
                         if (item.spotify && item.spotify !== "") {
-                            botaoSpotify = `<a href="${item.spotify}" target="_blank" style="${estiloBotao} background: linear-gradient(135deg, #10B981, #059669);">🎧 Spotify</a>`;
+                            botaoSpotify = `<a href="${item.spotify}" target="_blank" style="${estiloBotao}">🎧 Spotify</a>`;
                         }
 
-                        // Monta o Card de cada música
+                        // 2º e 3º - Reduzido o margin-bottom para 8px e alinhado os botões na frente do Tom com flexbox
                         html += `
-                        <div class="card" style="margin-bottom:15px; border-left: 5px solid var(--primary); padding: 15px;">
-                            <h4 style="margin:0 0 5px 0; color:var(--text);">${item.musica}</h4>
-                            <p style="margin:0 0 10px 0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${item.tom || 'N/A'}</p>
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                ${botaoCifra} ${botaoYouTube} ${botaoSpotify}
+                        <div class="card" style="margin-bottom:8px; border-left: 5px solid var(--primary); padding: 12px 15px;">
+                            <h4 style="margin:0 0 5px 0; color:var(--text); font-size: 15px;">${item.musica}</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <p style="margin:0; font-size:14px; color:var(--text-light);"><strong>Tom:</strong> ${item.tom || 'N/A'}</p>
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    ${botaoCifra} ${botaoYouTube} ${botaoSpotify}
+                                </div>
                             </div>
                         </div>`;
                     });
