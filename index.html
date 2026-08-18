@@ -698,7 +698,7 @@
                     </div>
                 </div>
 
-                <!-- Modal de Editar Repertório -->
+                <!-- Modal de Editar Setlist -->
                 <div id="modal-editar-repertorio" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);">
                     <div class="card" style="max-width: 400px; width:100%; position:relative; animation: fadeIn 0.3s ease; border: 2px solid var(--success); max-height: 90vh; overflow-y: auto;">
                         <h3 id="tituloMusicaEdit" style="color:var(--primary); margin-top:0;">Editando Música</h3>
@@ -757,7 +757,7 @@
                         Minhas Escalas <span id="dot-notificacao" class="badge-notificacao" style="display:none;"></span>
                     </div>
                     <div class="nav-tab" onclick="mudarAba('geral')">Todas as Escalas</div>
-                    <div class="nav-tab" onclick="mudarAba('repertorio')">Repertório</div>
+                    <div class="nav-tab" onclick="mudarAba('repertorio')">Setlist</div>
                     <div class="nav-tab" id="tab-admin" onclick="mudarAba('admin')" style="display:none; font-weight:800;">Visão Geral</div>
                 </div>
                 
@@ -1114,7 +1114,7 @@
                             <button class="botao-ver-banda" onclick="toggleBandaEscalada(this, '${esc.data}')">Ver Banda ▼</button>
                             <div class="conteudo-banda-dropdown"></div>
                             
-                            <button class="botao-ver-banda" style="color: var(--success);" onclick="toggleRepertorioEscalada(this, '${esc.data}')">Ver Repertório 🎵</button>
+                            <button class="botao-ver-banda" style="color: var(--success);" onclick="toggleRepertorioEscalada(this, '${esc.data}')">Ver Setlist 🎵</button>
                             <div class="conteudo-banda-dropdown"></div>
                         `;
 
@@ -1248,7 +1248,7 @@
                     <h4 style="margin-top:0; margin-bottom:10px; color: var(--primary);"> Painel de Gerenciamento</h4>
                     <button class="btn-admin-panel" onclick="abrirFormEscala()">➕ Escala</button>
                     <button class="btn-admin-panel" onclick="abrirModalNovaMusica()">➕ Adicionar Música</button>
-                    <button class="btn-admin-panel" onclick="abrirFormRepertorio()">➕ Repertório</button>
+                    <button class="btn-admin-panel" onclick="abrirFormRepertorio()">➕ Setlist</button>
                     <button class="btn-admin-panel" onclick="abrirFormMembro()">➕ Membro</button>
                 </div>`; 
                 
@@ -1443,7 +1443,7 @@
             
             const res = await postAPI(getScriptUrl(), { acao: 'cadastrarRepertorio', data: data, ordem: ordem, musica: nome, tom: tom, cifra: cifra, youtube: youtube, spotify: spotify });
             if(res && res.sucesso) { 
-                mostrarNotificacao("Música adicionada ao repertório!", "success"); 
+                mostrarNotificacao("Música adicionada ao Setlist!", "success"); 
                 limparCacheApp(); 
                 mudarAba('admin'); 
             } else { 
@@ -1579,11 +1579,11 @@
                 
                 if (res && res.sucesso) { 
                     if (!res.musicas || res.musicas.length === 0) { 
-                        div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum repertório futuro cadastrado.</p></div>`; 
+                        div.innerHTML = `<div class="card"><p style="color:#000000;">Nenhum Setlist futuro cadastrado.</p></div>`; 
                         return; 
                     } 
                     
-                    let html = '<h3 style="color:#000000; text-align:center; margin-bottom:15px;">Repertório dos Cultos 🎵</h3>'; 
+                    let html = '<h3 style="color:#000000; text-align:center; margin-bottom:15px;">Setlist dos Cultos 🎵</h3>'; 
                     let dataAtual = ''; 
                     
                     const isAdmin = usuarioAtual.funcao.toUpperCase().includes("ADMIN");
@@ -1776,17 +1776,17 @@
             btn.disabled = false;
 
             if (res && (res.sucesso || res.status === "sucesso")) {
-                mostrarNotificacao("Repertório atualizado com sucesso!", "success");
+                mostrarNotificacao("Setlist atualizado com sucesso!", "success");
                 fecharModais();
                 limparCacheApp(); 
                 carregarRepertorio(); 
             } else {
-                mostrarNotificacao("Erro ao atualizar o repertório.", "error");
+                mostrarNotificacao("Erro ao atualizar o Setlist.", "error");
             }
         }
         
         async function excluirMusicaRepertorio(musica) {
-            if(!confirm(`Tem certeza que deseja excluir "${musica}" do repertório?`)) {
+            if(!confirm(`Tem certeza que deseja excluir "${musica}" do Setlist?`)) {
                 return;
             }
             
@@ -1798,7 +1798,7 @@
             mostrarLoading(false);
 
             if (res && res.sucesso) {
-                mostrarNotificacao("Música removida do repertório!", "success");
+                mostrarNotificacao("Música removida do Setlist!", "success");
                 limparCacheApp(); 
                 carregarRepertorio(); 
             } else {
@@ -1877,12 +1877,12 @@
             
             if (conteudo.classList.contains('mostrar')) {
                 conteudo.classList.remove('mostrar');
-                botao.innerHTML = 'Ver Repertório 🎵';
+                botao.innerHTML = 'Ver Setlist 🎵';
                 return;
             }
 
             conteudo.classList.add('mostrar');
-            botao.innerHTML = 'Ocultar Repertório ▲';
+            botao.innerHTML = 'Ocultar Setlist ▲';
 
             if (conteudo.innerHTML.trim() === '') {
                 conteudo.innerHTML = '<div style="text-align:center; padding:10px; font-size:12px; color:var(--primary);">⏳ Buscando músicas...</div>';
@@ -1941,7 +1941,7 @@
                         
                         conteudo.innerHTML = htmlMusicas;
                     } else {
-                        conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444; justify-content: center;">Erro ao carregar o repertório.</div>';
+                        conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444; justify-content: center;">Erro ao carregar o Setlist.</div>';
                     }
                 } catch (e) {
                     conteudo.innerHTML = '<div class="item-membro-banda" style="color:#EF4444; justify-content: center;">Falha de conexão com o servidor.</div>';
