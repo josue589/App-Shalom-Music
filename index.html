@@ -1673,26 +1673,38 @@
                     let html = '<h3 style="color:#000000; text-align:center; margin-bottom:15px;">Banco de Músicas 📚</h3>';
 
                     res.musicas.forEach(item => {
-                        let botaoCifra = "";
+                       let botaoCifra = "";
                         let botaoYouTube = "";
                         let botaoSpotify = "";
                         
-                        let estiloBotao = "background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 6px 12px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.15);";
+                        let estiloIcone = "background: transparent !important; box-shadow: none !important; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;";
 
                         if (item.cifra && item.cifra !== "") {
-                            botaoCifra = `<a href="${item.cifra}" target="_blank" style="${estiloBotao}">📄 Cifra</a> `;
+                            botaoCifra = `
+                            <a href="${item.cifra}" target="_blank" title="Ver Cifra" style="${estiloIcone}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+                                    <path fill="#4655F6" d="M20 8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 4.5l3.5 3.5H14v-3.5zM16 17H8v-2h8v2zm0-4H8v-2h8v2z"/>
+                                </svg>
+                            </a>`;
                         }
-                       if (item.youtube && item.youtube !== "") {
+                        
+                        if (item.youtube && item.youtube !== "") {
                             botaoYouTube = `
-                            <a href="${item.youtube}" target="_blank" title="Assistir no YouTube" style="background: transparent !important; box-shadow: none !important; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
+                            <a href="${item.youtube}" target="_blank" title="Assistir no YouTube" style="${estiloIcone}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
                                   <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
                                   <path fill="#FFFFFF" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                                 </svg>
                             </a>`;
                         }
+                        
                         if (item.spotify && item.spotify !== "") {
-                            botaoSpotify = `<a href="${item.spotify}" target="_blank" style="${estiloBotao}">🎧 Spotify</a>`;
+                            botaoSpotify = `
+                            <a href="${item.spotify}" target="_blank" title="Ouvir no Spotify" style="${estiloIcone}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+                                    <path fill="#1DB954" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.394-.687.522-1.082.282-2.966-1.815-6.7-2.224-11.085-1.218-.462.106-.91-.186-1.016-.648-.106-.462.186-.91.648-1.016 4.821-1.106 8.948-.646 12.25 1.517.394.24.522.687.285 1.083zm1.428-3.192c-.301.492-.933.656-1.424.355-3.39-2.083-8.625-2.671-12.72-1.464-.55.162-1.127-.152-1.289-.702-.162-.55.152-1.127.702-1.289 4.71-1.385 10.493-.73 14.376 1.657.492.301.656.933.355 1.443zm.126-3.332C15.115 8.449 8.784 8.243 5.12 9.355c-.66.2-1.365-.173-1.565-.833-.2-.66.173-1.365.833-1.565 4.256-1.29 11.236-1.05 15.86 1.696.59.349.782 1.111.433 1.701-.349.59-1.111.782-1.701.433z"/>
+                                </svg>
+                            </a>`;
                         }
 
                         // Novo Layout: Título e Tom na primeira linha. Botões na segunda linha.
