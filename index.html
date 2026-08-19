@@ -1375,19 +1375,27 @@
 
         async function salvarNovaEscala() { 
             const data = document.getElementById('cad-esc-data').value; 
+            const nomeEvento = document.getElementById('cad-esc-evento').value.trim();
             const funcao = document.getElementById('cad-esc-funcao').value.trim(); 
             const nome = document.getElementById('cad-esc-nome').value.trim(); 
             
             if(!data || !funcao || !nome) { 
-                mostrarNotificacao("Preencha todos os campos!", "error"); 
+                mostrarNotificacao("Preencha a Data, Função e Nome do Integrante!", "error"); 
                 return; 
             } 
             
-            const res = await postAPI(getScriptUrl(), { acao: 'cadastrarEscala', data: data, funcao: funcao, nomeMembro: nome }); 
+            const res = await postAPI(getScriptUrl(), { 
+                acao: 'cadastrarEscala', 
+                data: data, 
+                nomeEvento: nomeEvento || "Culto", // Se você esquecer de preencher, ele salva como "Culto" por padrão
+                funcao: funcao, 
+                nomeMembro: nome 
+            }); 
+            
             if(res && res.sucesso) { 
                 mostrarNotificacao("Escala cadastrada com sucesso!", "success"); 
                 limparCacheApp(); 
-                mudarAba('admin'); 
+                mudarAba('admin'); // Volta para a tela administrativa
             } else { 
                 mostrarNotificacao("Erro ao salvar a escala.", "error"); 
             } 
