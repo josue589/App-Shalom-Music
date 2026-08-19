@@ -1310,19 +1310,36 @@
         function abrirFormEscala() { 
             document.getElementById('conteudo-aba').innerHTML = `<div class="card">
                 <h3 style="color:var(--primary); margin-top:0;">🗓️ Agendar Nova Escala</h3>
-                <label>Data do Culto:</label> <input type="date" id="cad-esc-data">
+                
+                <label>Data do Evento:</label> 
+                <input type="date" id="cad-esc-data">
+                
+                <label>Nome da Escala / Evento:</label> 
+                <input type="text" id="cad-esc-evento" placeholder="Ex: Culto de Celebração, Ensaio Banda 1">
+                
                 <label>Função:</label> 
                 <select id="cad-esc-funcao">
                     <option value="">Selecione uma função...</option>
-                    <option value="Ministro">Ministro</option><option value="Vocal 1">Vocal 1</option>
-                    <option value="Vocal 2">Vocal 2</option><option value="Vocal 3">Vocal 3</option>
-                    <option value="Violino">Violino</option><option value="Violão">Violão</option>
-                    <option value="Guitarra">Guitarra</option><option value="Teclado">Teclado</option>
-                    <option value="Baixo">Baixo</option><option value="Bateria">Bateria</option>
+                    <option value="Ministro">Ministro</option>
+                    <option value="Líder de Adoração">Líder de Adoração</option>
+                    <option value="Vocal 1">Vocal 1</option>
+                    <option value="Vocal 2">Vocal 2</option>
+                    <option value="Vocal 3">Vocal 3</option>
+                    <option value="Vocal 4">Vocal 4</option>
+                    <option value="Vocal 5">Vocal 5</option>
+                    <option value="Vocal 6">Vocal 6</option>
+                    <option value="Violino">Violino</option>
+                    <option value="Violão">Violão</option>
+                    <option value="Guitarra">Guitarra</option>
+                    <option value="Teclado">Teclado</option>
+                    <option value="Baixo">Baixo</option>
+                    <option value="Bateria">Bateria</option>
                 </select>
+                
                 <label>Nome do Integrante:</label> 
-                <input list="lista-membros" id="cad-esc-nome" placeholder="Buscando integrantes..." autocomplete="off">
+                <input list="lista-membros" id="cad-esc-nome" placeholder="Clique ou digite para pesquisar..." autocomplete="off">
                 <datalist id="lista-membros"></datalist>
+                
                 <button onclick="salvarNovaEscala()" style="margin-top:15px;">💾 Salvar Escala</button>
                 <button onclick="mudarAba('admin')" style="background:none; color:var(--text-light); box-shadow:none; margin-top:5px;">Cancelar</button>
             </div>`; 
