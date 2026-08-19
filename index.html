@@ -1590,7 +1590,8 @@
                                 corTexto = "var(--primary)"; // Azul (para Ensaios)
                             }
 
-                            legendasMes += `<div style="color: ${corTexto}; font-weight: 600; font-size: 14px; text-align: center; margin-top: 6px;">
+                            // Novo formato do item da legenda (alinhado à esquerda)
+                            legendasMes += `<div style="color: ${corTexto}; font-weight: 600; font-size: 13px; text-align: left;">
                                 ${infoEv.dia} - ${infoEv.nomeEvento}
                             </div>`;
                         }
@@ -1598,9 +1599,9 @@
 
                     htmlCalendario += `</div>`; // Fecha a grid do calendário
                     
-                    // Adiciona a lista de legendas logo abaixo dos dias do mês, se houver
+                    // Adiciona a lista de legendas logo abaixo em um Grid de 2 colunas
                     if (legendasMes !== '') {
-                        htmlCalendario += `<div style="margin-top: 15px; border-top: 1px dashed #E5E7EB; padding-top: 10px;">${legendasMes}</div>`;
+                        htmlCalendario += `<div style="margin-top: 15px; border-top: 1px dashed #E5E7EB; padding-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">${legendasMes}</div>`;
                     }
 
                     htmlCalendario += `</div>`; // Fecha o container do mês
