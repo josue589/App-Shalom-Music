@@ -1515,6 +1515,8 @@
                     return; 
                 } 
                 
+                // Mapeia os dias e guarda o nome dos eventos
+                const eventosPorDia = {}; 
                 const datasUnicas = []; 
                 const diasEscalados = []; 
                 
@@ -1522,6 +1524,17 @@
                     const d = new Date(esc.data); 
                     d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); 
                     const dataStr = d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear(); 
+                    
+                    // Salva o nome do evento associado a essa data (se não tiver, escreve "Culto")
+                    if (!eventosPorDia[dataStr]) {
+                        eventosPorDia[dataStr] = {
+                            dia: d.getDate(),
+                            nomeEvento: esc.nomeEvento || "Culto",
+                            mes: d.getMonth(),
+                            ano: d.getFullYear()
+                        };
+                    }
+
                     if (!diasEscalados.includes(dataStr)) { 
                         diasEscalados.push(dataStr); 
                         datasUnicas.push(d); 
@@ -1558,15 +1571,42 @@
                         htmlCalendario += `<div class="calendar-day empty"></div>`;
                     }
                     
+                    let legendasMes = '';
+
                     for (let dia = 1; dia <= diasNoMes; dia++) { 
                         const dataCheck = dia + '/' + infoMes.mes + '/' + infoMes.ano; 
                         const isHoje = (dia === hoje.getDate() && infoMes.mes === hoje.getMonth() && infoMes.ano === hoje.getFullYear()) ? 'today' : ''; 
                         const isDiaCulto = diasEscalados.includes(dataCheck) ? 'scheduled' : ''; 
+                        
                         htmlCalendario += `<div class="calendar-day ${isHoje} ${isDiaCulto}">${dia}</div>`; 
+                        
+                        // Se for dia de evento, adiciona na lista de legendas do mês
+                        if (isDiaCulto) {
+                            const infoEv = eventosPorDia[dataCheck];
+                            
+                            // Lógica de Cores da Legenda
+                            let corTexto = "#10B981"; // Verde (para Cultos)
+                            if (infoEv.nomeEvento.toLowerCase().includes("ensaio")) {
+                                corTexto = "var(--primary)"; // Azul (para Ensaios)
+                            }
+
+                            legendasMes += `<div style="color: ${corTexto}; font-weight: 600; font-size: 14px; text-align: center; margin-top: 6px;">
+                                ${infoEv.dia} - ${infoEv.nomeEvento}
+                            </div>`;
+                        }
                     } 
-                    htmlCalendario += `</div></div>`; 
+
+                    htmlCalendario += `</div>`; // Fecha a grid do calendário
+                    
+                    // Adiciona a lista de legendas logo abaixo dos dias do mês, se houver
+                    if (legendasMes !== '') {
+                        htmlCalendario += `<div style="margin-top: 15px; border-top: 1px dashed #E5E7EB; padding-top: 10px;">${legendasMes}</div>`;
+                    }
+
+                    htmlCalendario += `</div>`; // Fecha o container do mês
                     htmlFinal += htmlCalendario; 
                 }); 
+                
                 div.innerHTML = htmlFinal; 
             } else { 
                 div.innerHTML = `<div class="card"><p style="color:#EF4444;">Erro ao carregar a agenda geral.</p></div>`; 
