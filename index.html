@@ -263,30 +263,24 @@
             background: #E5E7EB; 
         }
 
-        .nav-tabs { 
+       .nav-tabs { 
             display: flex; 
-            justify-content: center; /* Centraliza os botões na tela */
-            gap: 5px; /* Define o espaço exato entre um botão e outro (aumente ou diminua se quiser) */
+            justify-content: space-between; 
+            gap: 2px; /* Reduz o espaço vazio entre um botão e outro */
             background: linear-gradient(to right, var(--primary), var(--success)); 
-            padding: 6px; 
-            border-radius: 14px; 
-            margin-bottom: 30px; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
+            padding: 4px; /* Diminui a borda verde ao redor */
+            border-radius: 12px; 
+            margin-bottom: 25px; 
             box-shadow: 0 4px 15px rgba(70, 85, 246, 0.2); 
         }
 
-        .nav-tabs::-webkit-scrollbar { 
-            display: none; 
-        }
-
         .nav-tab { 
-            /* A propriedade 'flex: 1;' foi removida para não esticar os botões forçadamente */
-            padding: 10px 14px; /* Ajusta a "gordura" do botão ao redor do texto */
+            flex: 1; /* Força os botões a dividirem o espaço da tela por igual */
+            padding: 8px 2px; /* Diminui a 'gordura' interna do botão para caber mais texto */
             text-align: center; 
             background: transparent; 
-            border-radius: 10px; 
-            font-size: 13px; /* Fonte levemente menor para garantir que os 4 caibam na tela do celular */
+            border-radius: 8px; 
+            font-size: 11px; /* Fonte menor para garantir que todas as opções caibam */
             font-weight: 600; 
             color: rgba(255, 255, 255, 0.9); 
             white-space: nowrap; 
