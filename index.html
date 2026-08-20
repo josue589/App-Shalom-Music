@@ -600,6 +600,25 @@
         .textarea-cifra:focus {
             border-color: var(--primary);
         }
+        /* CORREÇÃO DO MENU DE ABAS NO CELULAR */
+        .tabs {
+            overflow-x: auto !important; /* Habilita a rolagem para os lados */
+            white-space: nowrap !important; /* Impede que quebre a linha */
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important; /* Alinha no começo */
+            -webkit-overflow-scrolling: touch; /* Deixa a rolagem suave no iPhone/Android */
+            scrollbar-width: none; /* Esconde a barra no Firefox */
+        }
+        
+        /* Esconde a barra de rolagem no Chrome/Safari para manter o visual limpo */
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Impede que os botões do menu encolham */
+        .tabs button {
+            flex-shrink: 0 !important;
+        }
     </style>
 </head>
 <body>
