@@ -600,36 +600,7 @@
         .textarea-cifra:focus {
             border-color: var(--primary);
         }
-        /* CORREÇÃO DO MENU DE ABAS NO CELULAR - VERSÃO APRIMORADA */
-        .tabs {
-            display: flex !important;
-            overflow-x: auto !important;
-            white-space: nowrap !important;
-            flex-wrap: nowrap !important;
-            justify-content: flex-start !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            width: 100% !important;
-            box-sizing: border-box !important;
-            padding-bottom: 5px !important; /* Dá um respiro embaixo */
-        }
-        
-        /* Esconde a barra de rolagem */
-        .tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Impede que os botões encolham */
-        .tabs button {
-            flex-shrink: 0 !important;
-        }
-
-        /* Cria um espaço fantasma no final para garantir que o último botão apareça inteiro */
-        .tabs::after {
-            content: '';
-            min-width: 15px; /* Espaço extra no final da rolagem */
-            display: block;
-        }
+   
     </style>
 </head>
 <body>
