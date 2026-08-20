@@ -600,24 +600,35 @@
         .textarea-cifra:focus {
             border-color: var(--primary);
         }
-        /* CORREÇÃO DO MENU DE ABAS NO CELULAR */
+        /* CORREÇÃO DO MENU DE ABAS NO CELULAR - VERSÃO APRIMORADA */
         .tabs {
-            overflow-x: auto !important; /* Habilita a rolagem para os lados */
-            white-space: nowrap !important; /* Impede que quebre a linha */
+            display: flex !important;
+            overflow-x: auto !important;
+            white-space: nowrap !important;
             flex-wrap: nowrap !important;
-            justify-content: flex-start !important; /* Alinha no começo */
-            -webkit-overflow-scrolling: touch; /* Deixa a rolagem suave no iPhone/Android */
-            scrollbar-width: none; /* Esconde a barra no Firefox */
+            justify-content: flex-start !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            padding-bottom: 5px !important; /* Dá um respiro embaixo */
         }
         
-        /* Esconde a barra de rolagem no Chrome/Safari para manter o visual limpo */
+        /* Esconde a barra de rolagem */
         .tabs::-webkit-scrollbar {
             display: none;
         }
 
-        /* Impede que os botões do menu encolham */
+        /* Impede que os botões encolham */
         .tabs button {
             flex-shrink: 0 !important;
+        }
+
+        /* Cria um espaço fantasma no final para garantir que o último botão apareça inteiro */
+        .tabs::after {
+            content: '';
+            min-width: 15px; /* Espaço extra no final da rolagem */
+            display: block;
         }
     </style>
 </head>
